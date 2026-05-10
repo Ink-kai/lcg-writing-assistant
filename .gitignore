@@ -13,6 +13,9 @@ dist/
 build/
 *.tsbuildinfo
 
+# Local Obsidian community release checkout
+obsidian-releases/
+
 # Logs and caches
 *.log
 npm-debug.log*
