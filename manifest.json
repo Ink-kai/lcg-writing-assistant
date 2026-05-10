@@ -3,7 +3,7 @@
 	"name": "LCG Writing Assistant",
 	"version": "1.0.0",
 	"minAppVersion": "1.5.0",
-	"description": "Slash menu and front matter helpers for writing Hugo/FixIt posts in Obsidian.",
+	"description": "Slash menu and front matter helpers for writing Hugo/FixIt posts.",
 	"author": "Ink-kai",
 	"isDesktopOnly": false
 }
