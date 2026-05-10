@@ -1,0 +1,44 @@
+# Editors
+.vscode/
+.idea/
+*.iml
+
+# Dependencies
+node_modules/
+
+# Build output
+main.js
+*.map
+dist/
+build/
+*.tsbuildinfo
+
+# Logs and caches
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.eslintcache
+coverage/
+.nyc_output/
+
+# Local Obsidian plugin state
+data.json
+.hotreload
+
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+
+# Agent notes and internal planning docs
+CLAUDE.md
+requirement.md
+docs/monetization-plan.md
+docs/funding-and-paid-flow.md
+docs/release-checklist.md
+
+# OS files
+.DS_Store
+Thumbs.db
