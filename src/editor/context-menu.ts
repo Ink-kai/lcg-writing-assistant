@@ -1,4 +1,3 @@
-/* eslint-disable obsidianmd/ui/sentence-case */
 import {Editor, MarkdownFileInfo, Menu, Plugin} from "obsidian";
 import {LCGWritingAssistantSettings} from "../settings";
 import {FrontmatterAssistantModal} from "../ui/frontmatter-modal";

@@ -1,4 +1,3 @@
-/* eslint-disable obsidianmd/ui/sentence-case */
 import {App, Notice, Plugin, PluginSettingTab, Setting} from "obsidian";
 import {
 	DEFAULT_TEMPLATE_FIELD_KEYS,

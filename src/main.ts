@@ -1,4 +1,3 @@
-/* eslint-disable obsidianmd/ui/sentence-case */
 import {Notice, Plugin} from "obsidian";
 import {registerLCGCommands} from "./commands";
 import {registerEditorContextMenu} from "./editor/context-menu";

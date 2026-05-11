@@ -1,4 +1,3 @@
-/* eslint-disable obsidianmd/ui/sentence-case */
 import {Plugin} from "obsidian";
 import {insertFrontmatterTemplate, insertOrUpdateField, validateCurrentNote} from "./frontmatter/editor";
 import {DEFAULT_TEMPLATE_FIELD_KEYS, LCG_FRONTMATTER_FIELDS, getFieldDefinition} from "./frontmatter/schema";
