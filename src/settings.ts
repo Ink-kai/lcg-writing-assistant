@@ -92,9 +92,7 @@ export class LCGSettingTab extends PluginSettingTab {
 		const {containerEl} = this;
 		containerEl.empty();
 
-		new Setting(containerEl)
-			.setName("Lcg writing assistant")
-			.setHeading();
+		;
 
 		this.renderTabs(containerEl);
 		if (this.activeTab === "general") {
@@ -188,7 +186,7 @@ export class LCGSettingTab extends PluginSettingTab {
 			.setHeading();
 
 		new Setting(containerEl)
-			.setName("Upload image to cdn when pasting")
+			.setName("Upload image to CDN when pasting")
 			.setDesc("开启后，剪贴板图片会先上传，再插入 Markdown 图片链接。关闭时完全交给 Obsidian 默认附件逻辑处理。")
 			.addToggle((toggle) => toggle
 				.setValue(this.plugin.settings.cdnEnabled)
@@ -212,7 +210,7 @@ export class LCGSettingTab extends PluginSettingTab {
 			.addDropdown((dropdown) => dropdown
 				.addOption("none", "不上传")
 				.addOption("cloudflare-r2", "Cloudflare r2")
-				.addOption("webdav", "Webdav")
+				.addOption("webdav", "WebDAV")
 				.setValue(this.plugin.settings.cdnProvider)
 				.onChange(async (value) => {
 					this.plugin.settings.cdnProvider = value as LCGWritingAssistantSettings["cdnProvider"];
@@ -254,7 +252,7 @@ export class LCGSettingTab extends PluginSettingTab {
 		}
 
 		new Setting(containerEl)
-			.setName("Test cdn upload")
+			.setName("Test CDN upload")
 			.setDesc("上传一个很小的文本文件并尝试删除，用来验证凭据、路径和公开 URL 拼接。")
 			.addButton((button) => button
 				.setButtonText("测试上传")
@@ -342,7 +340,7 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("R2 access key id")
+			.setName("R2 access key ID")
 			.setDesc("使用 cfat token 时会通过 Cloudflare verify 接口自动获取。")
 			.addText((text) => text
 				.setPlaceholder("access key id")
@@ -371,7 +369,7 @@ export class LCGSettingTab extends PluginSettingTab {
 
 	private renderWebDavSettings(containerEl: HTMLElement): void {
 		new Setting(containerEl)
-			.setName("Webdav address")
+			.setName("WebDAV address")
 			.setDesc("远端目录地址，例如 https://dav.example.com/blog-assets。")
 			.addText((text) => text
 				.setPlaceholder("https://dav.example.com/blog-assets")
@@ -383,7 +381,7 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("Webdav username")
+			.setName("WebDAV username")
 			.setDesc("Basic Auth 用户名；如果服务端不需要认证可留空。")
 			.addText((text) => text
 				.setPlaceholder("username")
@@ -395,7 +393,7 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("Webdav password")
+			.setName("WebDAV password")
 			.setDesc("Basic Auth 密码或应用密码。")
 			.addText((text) => {
 				text.inputEl.type = "password";

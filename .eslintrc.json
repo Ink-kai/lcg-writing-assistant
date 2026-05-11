@@ -1,0 +1,12 @@
+{
+  "extends": ["plugin:obsidianmd/recommended"],
+  "rules": {
+    "obsidianmd/ui/sentence-case": ["warn", {
+      "allowAutoFix": true,
+      "mode": "loose",
+      "ignoreRegex": "[\\u4e00-\\u9fff]",
+      "brands": ["CDN", "R2", "S3", "WebDAV", "API", "URL"]
+    }],
+    "obsidianmd/settings-tab/no-problematic-settings-headings": "off"
+  }
+}
