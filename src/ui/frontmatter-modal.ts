@@ -56,7 +56,7 @@ export class FrontmatterAssistantModal extends Modal {
 	onOpen(): void {
 		this.closed = false;
 		this.committed = false;
-		this.setTitle("Front Matter 编辑");
+		this.setTitle("Front matter 编辑");
 		this.contentEl.empty();
 		this.contentEl.addClass("lcg-frontmatter-modal");
 		this.initializeControls();
