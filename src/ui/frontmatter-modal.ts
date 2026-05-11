@@ -533,7 +533,7 @@ export class FrontmatterAssistantModal extends Modal {
 			const chip = control.chipsEl.createSpan({cls: "lcg-array-input__chip"});
 			chip.createSpan({text: value});
 			const removeButton = chip.createEl("button", {
-				text: "x",
+				text: "×",
 				attr: {
 					type: "button",
 					"aria-label": `移除 ${value}`,

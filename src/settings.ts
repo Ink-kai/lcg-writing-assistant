@@ -206,11 +206,11 @@ export class LCGSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Upload method")
-			.setDesc("Cloudflare R2 使用 S3 兼容 API；WebDAV 使用 MKCOL 和 PUT。")
+			.setDesc("对象存储使用兼容 S3 的接口；网页文件服务使用 mkcol 和 put。")
 			.addDropdown((dropdown) => dropdown
 				.addOption("none", "不上传")
 				.addOption("cloudflare-r2", "Cloudflare r2")
-				.addOption("webdav", "WebDAV")
+				.addOption("webdav", "网页文件服务")
 				.setValue(this.plugin.settings.cdnProvider)
 				.onChange(async (value) => {
 					this.plugin.settings.cdnProvider = value as LCGWritingAssistantSettings["cdnProvider"];
@@ -235,7 +235,7 @@ export class LCGSettingTab extends PluginSettingTab {
 			.setName("Upload path prefix")
 			.setDesc("对象 key 的前缀，例如 images 或 posts/assets。最终会生成 年/月/文章名-时间.扩展名。")
 			.addText((text) => text
-				.setPlaceholder("images")
+				.setPlaceholder("Images")
 				.setValue(this.plugin.settings.cdnPathPrefix)
 				.onChange(async (value) => {
 					this.plugin.settings.cdnPathPrefix = value.trim();
@@ -287,7 +287,7 @@ export class LCGSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Paste cloudflare/r2 information")
-			.setDesc("粘贴 Account ID、cfat token、R2 endpoint/bucket 或 Cloudflare R2 S3 凭据。插件只解析并填充，不保存粘贴原文。")
+			.setDesc("粘贴账号编号、cfat token、r2 endpoint/bucket 或 r2 S3 凭据。插件只解析并填充，不保存粘贴原文。")
 			.addTextArea((text) => {
 				text.inputEl.rows = 6;
 				text
@@ -302,7 +302,7 @@ export class LCGSettingTab extends PluginSettingTab {
 				.onClick(async () => {
 					const result = await parseR2Credentials(pastedCredentials);
 					if (result.applied.length === 0) {
-						new Notice("没有识别到 R2 凭据。");
+						new Notice("没有识别到 r2 凭据。");
 						return;
 					}
 
@@ -317,9 +317,9 @@ export class LCGSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("R2 endpoint account")
-			.setDesc("从 R2 endpoint 自动解析；通常不需要手填。")
+			.setDesc("从 r2 endpoint 自动解析；通常不需要手填。")
 			.addText((text) => text
-				.setPlaceholder("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+				.setPlaceholder("账号编号")
 				.setValue(this.plugin.settings.r2AccountId)
 				.onChange(async (value) => {
 					this.plugin.settings.r2AccountId = value.trim();
@@ -331,7 +331,7 @@ export class LCGSettingTab extends PluginSettingTab {
 			.setName("R2 bucket")
 			.setDesc("从 endpoint 路径自动解析；也可以手动指定已有 bucket。")
 			.addText((text) => text
-				.setPlaceholder("blog-assets")
+				.setPlaceholder("存储桶名称")
 				.setValue(this.plugin.settings.r2Bucket)
 				.onChange(async (value) => {
 					this.plugin.settings.r2Bucket = value.trim();
@@ -341,9 +341,9 @@ export class LCGSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("R2 access key ID")
-			.setDesc("使用 cfat token 时会通过 Cloudflare verify 接口自动获取。")
+			.setDesc("使用 cfat token 时会通过服务端校验接口自动获取。")
 			.addText((text) => text
-				.setPlaceholder("access key id")
+				.setPlaceholder("访问密钥编号")
 				.setValue(this.plugin.settings.r2AccessKeyId)
 				.onChange(async (value) => {
 					this.plugin.settings.r2AccessKeyId = value.trim();
@@ -357,7 +357,7 @@ export class LCGSettingTab extends PluginSettingTab {
 			.addText((text) => {
 				text.inputEl.type = "password";
 				text
-					.setPlaceholder("secret access key")
+					.setPlaceholder("访问密钥")
 					.setValue(this.plugin.settings.r2SecretAccessKey)
 					.onChange(async (value) => {
 						this.plugin.settings.r2SecretAccessKey = value.trim();
@@ -369,7 +369,7 @@ export class LCGSettingTab extends PluginSettingTab {
 
 	private renderWebDavSettings(containerEl: HTMLElement): void {
 		new Setting(containerEl)
-			.setName("WebDAV address")
+			.setName("网页文件服务地址")
 			.setDesc("远端目录地址，例如 https://dav.example.com/blog-assets。")
 			.addText((text) => text
 				.setPlaceholder("https://dav.example.com/blog-assets")
@@ -381,10 +381,10 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("WebDAV username")
-			.setDesc("Basic Auth 用户名；如果服务端不需要认证可留空。")
+			.setName("网页文件服务用户名")
+			.setDesc("基本认证用户名；如果服务端不需要认证可留空。")
 			.addText((text) => text
-				.setPlaceholder("username")
+				.setPlaceholder("用户名")
 				.setValue(this.plugin.settings.webdavUsername)
 				.onChange(async (value) => {
 					this.plugin.settings.webdavUsername = value.trim();
@@ -393,12 +393,12 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("WebDAV password")
-			.setDesc("Basic Auth 密码或应用密码。")
+			.setName("网页文件服务密码")
+			.setDesc("基本认证密码或应用密码。")
 			.addText((text) => {
 				text.inputEl.type = "password";
 				text
-					.setPlaceholder("password")
+					.setPlaceholder("密码")
 					.setValue(this.plugin.settings.webdavPassword)
 					.onChange(async (value) => {
 						this.plugin.settings.webdavPassword = value;
@@ -414,7 +414,7 @@ export class LCGSettingTab extends PluginSettingTab {
 			.setHeading();
 
 		const description = containerEl.createDiv({cls: "lcg-settings-note"});
-		description.setText("用于 Obsidian 写作时查字段含义。来源目前来自内置 LCG/FixIt schema，后续会接入 Hugo 项目扫描。勾选“加入模板”可将字段加入插入模板。");
+		description.setText("用于 Obsidian 写作时查字段含义。来源目前来自内置 lcg/fixit schema，后续会接入 hugo 项目扫描。勾选“加入模板”可将字段加入插入模板。");
 
 		const toolbar = containerEl.createDiv({cls: "lcg-template-toolbar"});
 		const selectedCount = toolbar.createSpan({

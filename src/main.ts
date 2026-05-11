@@ -17,7 +17,7 @@ export default class LCGWritingAssistantPlugin extends Plugin {
 		registerPasteImageHandler(this, () => this.settings);
 
 		this.addSettingTab(new LCGSettingTab(this.app, this));
-		new Notice("LCG 写作助手已加载。");
+		new Notice("写作助手已加载。");
 	}
 
 	async loadSettings(): Promise<void> {

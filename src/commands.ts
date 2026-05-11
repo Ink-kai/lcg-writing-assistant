@@ -13,7 +13,7 @@ export function registerLCGCommands(plugin: Plugin, settings: LCGWritingAssistan
 function registerTemplateCommands(plugin: Plugin, settings: LCGWritingAssistantSettings): void {
 	plugin.addCommand({
 		id: "insert-lcg-frontmatter",
-		name: "插入 LCG front matter",
+		name: "插入 front matter",
 		editorCallback: (editor) => {
 			insertFrontmatterTemplate(editor, settings.frontmatterTemplateFieldKeys);
 		},
@@ -23,7 +23,7 @@ function registerTemplateCommands(plugin: Plugin, settings: LCGWritingAssistantS
 function registerValidationCommand(plugin: Plugin): void {
 	plugin.addCommand({
 		id: "validate-current-note",
-		name: "校验当前 LCG 文章",
+		name: "校验当前文章",
 		editorCallback: (editor) => {
 			const issues = validateCurrentNote(editor);
 			showValidationNotice(issues);
