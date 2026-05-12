@@ -10,10 +10,10 @@ It focuses on single-post editing: front matter templates, field explanations, w
 
 - Type `/lcg` in a Markdown editor to open the LCG writing menu.
 - Insert a configurable Hugo/FixIt front matter template.
-- Edit front matter through **Front Matter 编辑**.
+- Edit front matter through **Front matter 编辑**.
 - Browse grouped front matter field descriptions with Chinese labels.
 - Validate the current note for required fields, date format, draft state, array fields, and old compatibility fields.
-- Use the editor right-click **LCG 写作助手** submenu from one entry.
+- Use the editor right-click **LCG 写作助手** entry.
 - Paste image files into Markdown and upload them when CDN upload is enabled.
 - Select or paste images in image fields and upload them to Cloudflare R2 or WebDAV.
 - Leave image paste fully under Obsidian's default attachment workflow when CDN upload is disabled.
@@ -21,20 +21,20 @@ It focuses on single-post editing: front matter templates, field explanations, w
 
 ## Commands
 
-- `Insert LCG front matter`
-- `Validate current note`
-- `Insert LCG field: ...`
+- `插入 front matter`
+- `打开 front matter 编辑`
+- `校验当前文章`
+- `插入 LCG 字段：...`
+
+Command names are shown in Chinese because the plugin is currently focused on Hugo/FixIt writers using Chinese field guidance.
 
 ## Settings
 
-- Slash menu trigger phrase, default `/lcg`.
-- Auto-create front matter when inserting a field into a note without YAML.
-- Show advanced fields such as `author`, `password`, `repost`, and `_build`.
-- Configure which fields are included in the default template.
-- Configure CDN upload provider, public base URL, path prefix, and provider credentials.
-- Paste Cloudflare R2 credentials and parse them into settings.
-- Test Cloudflare R2 or WebDAV upload configuration.
-- Browse grouped field reference cards with name, property, description, source, and template status.
+- **基础**: configure the `/lcg` trigger phrase, auto-create front matter, and show advanced fields such as `author`, `password`, `repost`, and `_build`.
+- **图片上传**: configure optional CDN upload, public base URL, path prefix, and Cloudflare R2 or WebDAV credentials.
+- **字段说明**: browse grouped field reference cards and choose which fields are included in the default template.
+- Paste Cloudflare R2 credentials and parse them into settings without saving the original pasted text.
+- Test CDN upload, public URL access, and cleanup from settings.
 
 ## Installation
 
@@ -65,7 +65,7 @@ After the plugin is accepted into the community plugin directory:
 
 ### Slash menu
 
-In a Markdown note, type `/lcg` and select a writing action.
+In a Markdown note, type `/lcg` and select a writing action, such as inserting the template, opening **Front matter 编辑**, validating the note, or inserting a specific field.
 
 ### Right-click menu
 
@@ -73,7 +73,7 @@ Right-click in a Markdown editor and open **LCG 写作助手**.
 
 ### Front matter editor
 
-Use **Front Matter 编辑** to fill fields by category. Only fields with values are written. Empty fields are ignored.
+Use the command palette, `/lcg`, or the editor right-click menu to open **Front matter 编辑** and fill fields by category. Only fields with values are written. Empty fields are ignored.
 
 Array fields, such as `categories` and `tags`, use tag-style input. Type a value and press Enter or comma to add it.
 

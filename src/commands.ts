@@ -2,10 +2,12 @@ import {Plugin} from "obsidian";
 import {insertFrontmatterTemplate, insertOrUpdateField, validateCurrentNote} from "./frontmatter/editor";
 import {DEFAULT_TEMPLATE_FIELD_KEYS, LCG_FRONTMATTER_FIELDS, getFieldDefinition} from "./frontmatter/schema";
 import {LCGWritingAssistantSettings} from "./settings";
+import {FrontmatterAssistantModal} from "./ui/frontmatter-modal";
 import {showValidationNotice} from "./ui/notices";
 
 export function registerLCGCommands(plugin: Plugin, settings: LCGWritingAssistantSettings): void {
 	registerTemplateCommands(plugin, settings);
+	registerFrontmatterEditorCommand(plugin, settings);
 	registerValidationCommand(plugin);
 	registerFieldCommands(plugin, settings);
 }
@@ -16,6 +18,16 @@ function registerTemplateCommands(plugin: Plugin, settings: LCGWritingAssistantS
 		name: "插入 front matter",
 		editorCallback: (editor) => {
 			insertFrontmatterTemplate(editor, settings.frontmatterTemplateFieldKeys);
+		},
+	});
+}
+
+function registerFrontmatterEditorCommand(plugin: Plugin, settings: LCGWritingAssistantSettings): void {
+	plugin.addCommand({
+		id: "open-frontmatter-editor",
+		name: "打开 front matter 编辑",
+		editorCallback: (editor, info) => {
+			new FrontmatterAssistantModal(plugin.app, editor, settings, info.file?.path).open();
 		},
 	});
 }

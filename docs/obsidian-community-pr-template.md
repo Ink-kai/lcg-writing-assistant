@@ -34,8 +34,9 @@ For each tested platform, use the `[VERSION]` release assets from GitHub, instal
 - The plugin loads without startup errors.
 - The `/lcg` editor trigger opens the writing menu in a Markdown note.
 - The `插入 front matter` command inserts the configured Hugo/FixIt front matter template.
+- The `打开 front matter 编辑` command opens the categorized editor.
 - The `校验当前文章` command reports expected results for valid and invalid front matter.
-- The editor context menu shows the `写作助手` menu item.
+- The editor context menu shows the `LCG 写作助手` menu item.
 - The front matter editor opens, saves scalar fields, saves array fields, and ignores empty fields.
 - Settings render correctly, persist after reload, and do not require a network service by default.
 - With image upload disabled, normal image paste remains handled by Obsidian's default attachment workflow.

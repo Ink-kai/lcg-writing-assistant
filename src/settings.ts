@@ -15,8 +15,6 @@ export interface LCGWritingAssistantSettings {
 	autoCreateFrontmatter: boolean;
 	showAdvancedFields: boolean;
 	frontmatterTemplateFieldKeys: string[];
-	preserveObsidianFields: boolean;
-	hugoProjectPath: string;
 	cdnEnabled: boolean;
 	cdnProvider: UploadProvider;
 	cdnBaseUrl: string;
@@ -42,8 +40,6 @@ export const DEFAULT_SETTINGS: LCGWritingAssistantSettings = {
 	autoCreateFrontmatter: true,
 	showAdvancedFields: false,
 	frontmatterTemplateFieldKeys: [...DEFAULT_TEMPLATE_FIELD_KEYS],
-	preserveObsidianFields: false,
-	hugoProjectPath: "",
 	cdnEnabled: false,
 	cdnProvider: "none",
 	cdnBaseUrl: "",
@@ -92,8 +88,6 @@ export class LCGSettingTab extends PluginSettingTab {
 		const {containerEl} = this;
 		containerEl.empty();
 
-		;
-
 		this.renderTabs(containerEl);
 		if (this.activeTab === "general") {
 			this.renderGeneralSettings(containerEl);
@@ -127,7 +121,7 @@ export class LCGSettingTab extends PluginSettingTab {
 
 	private renderGeneralSettings(containerEl: HTMLElement): void {
 		new Setting(containerEl)
-			.setName("Trigger word")
+			.setName("触发词")
 			.setDesc("默认使用 /lcg，避免和 Obsidian 原生 / 菜单冲突。")
 			.addText((text) => text
 				.setPlaceholder("/lcg")
@@ -138,7 +132,7 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("Auto-create front matter")
+			.setName("自动创建 front matter")
 			.setDesc("当前笔记没有 front matter 时，插入字段会先创建 YAML 区块。")
 			.addToggle((toggle) => toggle
 				.setValue(this.plugin.settings.autoCreateFrontmatter)
@@ -148,7 +142,7 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("Show advanced field")
+			.setName("显示高级字段")
 			.setDesc("在 /lcg 菜单和字段说明里显示 author、password、repost、_build 等低频字段。")
 			.addToggle((toggle) => toggle
 				.setValue(this.plugin.settings.showAdvancedFields)
@@ -157,36 +151,15 @@ export class LCGSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 					this.display();
 				}));
-
-		new Setting(containerEl)
-			.setName("Preserve Obsidian private field")
-			.setDesc("发布转换时保留 Obsidian-only 属性。当前版本只记录配置。")
-			.addToggle((toggle) => toggle
-				.setValue(this.plugin.settings.preserveObsidianFields)
-				.onChange(async (value) => {
-					this.plugin.settings.preserveObsidianFields = value;
-					await this.plugin.saveSettings();
-				}));
-
-		new Setting(containerEl)
-			.setName("Hugo project path")
-			.setDesc("预留给后续自动扫描 archetypes/config 和发布流程。")
-			.addText((text) => text
-				.setPlaceholder("/path/to/hugo-site")
-				.setValue(this.plugin.settings.hugoProjectPath)
-				.onChange(async (value) => {
-					this.plugin.settings.hugoProjectPath = value.trim();
-					await this.plugin.saveSettings();
-				}));
 	}
 
 	private renderCdnSettings(containerEl: HTMLElement): void {
 		new Setting(containerEl)
-			.setName("Image upload")
+			.setName("图片上传")
 			.setHeading();
 
 		new Setting(containerEl)
-			.setName("Upload image to CDN when pasting")
+			.setName("粘贴图片时上传到 CDN")
 			.setDesc("开启后，剪贴板图片会先上传，再插入 Markdown 图片链接。关闭时完全交给 Obsidian 默认附件逻辑处理。")
 			.addToggle((toggle) => toggle
 				.setValue(this.plugin.settings.cdnEnabled)
@@ -205,12 +178,12 @@ export class LCGSettingTab extends PluginSettingTab {
 		}
 
 		new Setting(containerEl)
-			.setName("Upload method")
-			.setDesc("对象存储使用兼容 S3 的接口；网页文件服务使用 mkcol 和 put。")
+			.setName("上传方式")
+			.setDesc("对象存储使用兼容 S3 的接口；WebDAV 使用 MKCOL 和 PUT。")
 			.addDropdown((dropdown) => dropdown
 				.addOption("none", "不上传")
-				.addOption("cloudflare-r2", "Cloudflare r2")
-				.addOption("webdav", "网页文件服务")
+				.addOption("cloudflare-r2", "Cloudflare R2")
+				.addOption("webdav", "WebDAV")
 				.setValue(this.plugin.settings.cdnProvider)
 				.onChange(async (value) => {
 					this.plugin.settings.cdnProvider = value as LCGWritingAssistantSettings["cdnProvider"];
@@ -220,7 +193,7 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("Public access address")
+			.setName("公开访问地址")
 			.setDesc("上传完成后写入 Markdown 的 URL 前缀，例如 https://cdn.example.com。")
 			.addText((text) => text
 				.setPlaceholder("https://cdn.example.com")
@@ -232,7 +205,7 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("Upload path prefix")
+			.setName("上传路径前缀")
 			.setDesc("对象 key 的前缀，例如 images 或 posts/assets。最终会生成 年/月/文章名-时间.扩展名。")
 			.addText((text) => text
 				.setPlaceholder("Images")
@@ -252,7 +225,7 @@ export class LCGSettingTab extends PluginSettingTab {
 		}
 
 		new Setting(containerEl)
-			.setName("Test CDN upload")
+			.setName("测试 CDN 上传")
 			.setDesc("上传一个很小的文本文件并尝试删除，用来验证凭据、路径和公开 URL 拼接。")
 			.addButton((button) => button
 				.setButtonText("测试上传")
@@ -286,8 +259,8 @@ export class LCGSettingTab extends PluginSettingTab {
 		let pastedCredentials = "";
 
 		new Setting(containerEl)
-			.setName("Paste cloudflare/r2 information")
-			.setDesc("粘贴账号编号、cfat token、r2 endpoint/bucket 或 r2 S3 凭据。插件只解析并填充，不保存粘贴原文。")
+			.setName("粘贴 Cloudflare R2 信息")
+			.setDesc("粘贴账号编号、cfat token、R2 endpoint/bucket 或 R2 S3 凭据。插件只解析并填充，不保存粘贴原文。")
 			.addTextArea((text) => {
 				text.inputEl.rows = 6;
 				text
@@ -302,7 +275,7 @@ export class LCGSettingTab extends PluginSettingTab {
 				.onClick(async () => {
 					const result = await parseR2Credentials(pastedCredentials);
 					if (result.applied.length === 0) {
-						new Notice("没有识别到 r2 凭据。");
+						new Notice("没有识别到 R2 凭据。");
 						return;
 					}
 
@@ -316,8 +289,8 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("R2 endpoint account")
-			.setDesc("从 r2 endpoint 自动解析；通常不需要手填。")
+			.setName("R2 endpoint 账号")
+			.setDesc("从 R2 endpoint 自动解析；通常不需要手填。")
 			.addText((text) => text
 				.setPlaceholder("账号编号")
 				.setValue(this.plugin.settings.r2AccountId)
@@ -410,11 +383,11 @@ export class LCGSettingTab extends PluginSettingTab {
 
 	private renderFrontmatterReference(containerEl: HTMLElement): void {
 		new Setting(containerEl)
-			.setName("Front matter field description")
+			.setName("Front matter 字段说明")
 			.setHeading();
 
 		const description = containerEl.createDiv({cls: "lcg-settings-note"});
-		description.setText("用于 Obsidian 写作时查字段含义。来源目前来自内置 lcg/fixit schema，后续会接入 hugo 项目扫描。勾选“加入模板”可将字段加入插入模板。");
+		description.setText("用于 Obsidian 写作时查字段含义。字段来源是内置 Hugo/FixIt schema。勾选“加入模板”可将字段加入插入模板。");
 
 		const toolbar = containerEl.createDiv({cls: "lcg-template-toolbar"});
 		const selectedCount = toolbar.createSpan({

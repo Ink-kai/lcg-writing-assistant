@@ -11,9 +11,10 @@ import {insertFrontmatterTemplate, insertOrUpdateField, validateCurrentNote} fro
 import {FRONTMATTER_GROUP_LABELS, LCG_FRONTMATTER_FIELDS} from "../frontmatter/schema";
 import {FrontmatterFieldDefinition} from "../frontmatter/types";
 import {LCGWritingAssistantSettings} from "../settings";
+import {FrontmatterAssistantModal} from "../ui/frontmatter-modal";
 import {showValidationNotice} from "../ui/notices";
 
-type SlashAction = "template" | "validate" | "field";
+type SlashAction = "template" | "editor" | "validate" | "field";
 
 interface SlashSuggestion {
 	id: string;
@@ -120,6 +121,12 @@ export class LCGSlashSuggest extends EditorSuggest<SlashSuggestion> {
 			return;
 		}
 
+		if (value.action === "editor") {
+			new FrontmatterAssistantModal(this.app, context.editor, this.getSettings(), context.file.path).open();
+			this.close();
+			return;
+		}
+
 		if (value.field) {
 			insertOrUpdateField(context.editor, value.field, this.getSettings().autoCreateFrontmatter);
 		}
@@ -136,6 +143,14 @@ function buildSuggestions(settings: LCGWritingAssistantSettings): SlashSuggestio
 			subtitle: `按设置中的 ${settings.frontmatterTemplateFieldKeys.length || "0"} 个字段生成模板。`,
 			group: "Front matter 模板",
 			keywords: ["frontmatter", "template", "yaml", "模板"],
+		},
+		{
+			id: "editor",
+			action: "editor",
+			title: "打开 front matter 编辑",
+			subtitle: "按分类填写字段，保存时只写入已填写的值。",
+			group: "Front matter 编辑",
+			keywords: ["frontmatter", "editor", "modal", "编辑", "字段"],
 		},
 		{
 			id: "validate",

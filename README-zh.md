@@ -10,10 +10,10 @@ LCG Writing Assistant 是一个免费、开源的 Obsidian 插件，用于在 Ob
 
 - 在 Markdown 编辑器中输入 `/lcg` 打开 LCG 写作菜单。
 - 插入可配置的 Hugo/FixIt front matter 模板。
-- 通过 **Front Matter 编辑** 按分类补充文章 front matter。
+- 通过 **Front matter 编辑** 按分类补充文章 front matter。
 - 在设置中查看分组字段说明，包含名称、属性、描述、来源和模板状态。
 - 校验当前笔记的必填字段、日期格式、草稿状态、数组字段和兼容旧字段。
-- 在编辑器右键菜单中使用 **LCG 写作助手** 子菜单。
+- 在编辑器右键菜单中使用 **LCG 写作助手** 入口。
 - CDN 上传开启时，粘贴图片到正文会先上传，再插入 Markdown 图片链接。
 - 图片字段支持填写 URL、选择本地图片、粘贴剪贴板图片。
 - CDN 上传关闭时，图片粘贴完全交给 Obsidian 默认附件逻辑处理。
@@ -21,22 +21,18 @@ LCG Writing Assistant 是一个免费、开源的 Obsidian 插件，用于在 Ob
 
 ## 命令
 
-- `Insert LCG front matter`
-- `Validate current note`
-- `Insert LCG field: ...`
-
-命令面板中的命令名目前保留英文；插件内的右键菜单、设置页和写作入口以中文为主。
+- `插入 front matter`
+- `打开 front matter 编辑`
+- `校验当前文章`
+- `插入 LCG 字段：...`
 
 ## 设置
 
-- Slash 菜单触发词，默认 `/lcg`。
-- 插入字段时，如果当前笔记没有 YAML 区块，可自动创建 front matter。
-- 显示高级字段，例如 `author`、`password`、`repost`、`_build`。
-- 配置哪些字段加入默认模板。
-- 配置 CDN 上传方式、公开访问地址、上传路径前缀和服务凭据。
-- 粘贴 Cloudflare R2 信息并解析到设置。
-- 测试 Cloudflare R2 或 WebDAV 上传配置。
-- 按分类浏览 front matter 字段说明。
+- **基础**：配置 `/lcg` 触发词、自动创建 front matter，以及是否显示 `author`、`password`、`repost`、`_build` 等高级字段。
+- **图片上传**：配置可选的 CDN 上传、公开访问地址、上传路径前缀，以及 Cloudflare R2 或 WebDAV 凭据。
+- **字段说明**：按分类浏览 front matter 字段说明，并选择哪些字段加入默认模板。
+- 粘贴 Cloudflare R2 信息并解析到设置；插件不会保存粘贴原文。
+- 测试 CDN 上传、公开 URL 访问和测试文件清理。
 
 ## 安装
 
@@ -67,15 +63,15 @@ LCG Writing Assistant 是一个免费、开源的 Obsidian 插件，用于在 Ob
 
 ### Slash 菜单
 
-在 Markdown 笔记中输入 `/lcg`，选择需要的写作动作。
+在 Markdown 笔记中输入 `/lcg`，选择需要的写作动作，例如插入模板、打开 **Front matter 编辑**、校验文章或插入单个字段。
 
 ### 右键菜单
 
 在 Markdown 编辑器中右键，打开 **LCG 写作助手**。
 
-### Front Matter 编辑
+### Front matter 编辑
 
-使用 **Front Matter 编辑** 按分类填写字段。只有填写了值的字段会写入笔记；空字段不会改动当前文章。
+通过命令面板、`/lcg` 或编辑器右键菜单打开 **Front matter 编辑**，按分类填写字段。只有填写了值的字段会写入笔记；空字段不会改动当前文章。
 
 数组字段，例如 `categories` 和 `tags`，使用标签式输入。输入内容后按 Enter 或逗号即可添加。
 
