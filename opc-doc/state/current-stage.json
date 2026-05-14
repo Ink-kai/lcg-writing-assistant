@@ -1,0 +1,9 @@
+{
+  "stage": "06-mvp-design",
+  "status": "completed",
+  "completed_at": "2026-05-15",
+  "next_stage": "07-conversion-loop",
+  "summary": "直接发布插件验证渠道假设，30天内>50安装为目标，内容草稿已准备好",
+  "completed_stages": ["01-resource-audit", "02-niche-positioning", "03-value-proposition", "04-business-model", "06-mvp-design"],
+  "skipped_stages": ["05-opportunity-score"]
+}

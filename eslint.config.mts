@@ -5,6 +5,9 @@ import { globalIgnores } from "eslint/config";
 
 export default tseslint.config(
 	{
+		plugins: {
+			obsidianmd,
+		},
 		languageOptions: {
 			globals: {
 				...globals.browser,
@@ -19,6 +22,11 @@ export default tseslint.config(
 				tsconfigRootDir: import.meta.dirname,
 				extraFileExtensions: ['.json']
 			},
+		},
+		rules: {
+			"obsidianmd/ui/sentence-case": ["error", {
+				acronyms: ["LCG", "API", "R2", "r2", "S3", "CDN", "WEBDAV", "WebDAV", "HTTP", "Pro"],
+			}],
 		},
 	},
 	...obsidianmd.configs.recommended,

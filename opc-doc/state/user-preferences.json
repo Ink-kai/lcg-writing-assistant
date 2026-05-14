@@ -1,0 +1,13 @@
+{
+  "mode": "teaching",
+  "term_explanation": "边走边解释",
+  "pace_preference": "标准节奏，每次解释清楚再推进",
+  "familiarity": {
+    "opc": "完全不了解",
+    "lean_startup": "完全不了解",
+    "niche": "完全不了解",
+    "value_proposition": "完全不了解",
+    "business_model_canvas": "完全不了解"
+  },
+  "first_session": true
+}

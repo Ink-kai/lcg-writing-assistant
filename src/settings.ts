@@ -121,8 +121,8 @@ export class LCGSettingTab extends PluginSettingTab {
 
 	private renderGeneralSettings(containerEl: HTMLElement): void {
 		new Setting(containerEl)
-			.setName("触发词")
-			.setDesc("默认使用 /lcg，避免和 Obsidian 原生 / 菜单冲突。")
+			.setName("Trigger phrase")
+			.setDesc("Default is /lcg to avoid conflicts with Obsidian's native / menu.")
 			.addText((text) => text
 				.setPlaceholder("/lcg")
 				.setValue(this.plugin.settings.triggerPhrase)
@@ -132,8 +132,8 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("自动创建 front matter")
-			.setDesc("当前笔记没有 front matter 时，插入字段会先创建 YAML 区块。")
+			.setName("Auto-create front matter")
+			.setDesc("When current note has no front matter, inserting fields will first create a YAML block.")
 			.addToggle((toggle) => toggle
 				.setValue(this.plugin.settings.autoCreateFrontmatter)
 				.onChange(async (value) => {
@@ -142,8 +142,8 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("显示高级字段")
-			.setDesc("在 /lcg 菜单和字段说明里显示 author、password、repost、_build 等低频字段。")
+			.setName("Show advanced fields")
+			.setDesc("Show low-frequency fields like author, password, repost, _build in /lcg menu and field descriptions.")
 			.addToggle((toggle) => toggle
 				.setValue(this.plugin.settings.showAdvancedFields)
 				.onChange(async (value) => {
@@ -180,12 +180,12 @@ export class LCGSettingTab extends PluginSettingTab {
 		}
 
 		new Setting(containerEl)
-			.setName("上传方式")
-			.setDesc("对象存储使用兼容 S3 的接口；WebDAV 使用 MKCOL 和 PUT。")
+			.setName("Upload method")
+			.setDesc("Object storage uses S3-compatible API; WEBDAV uses mkcol and put.")
 			.addDropdown((dropdown) => dropdown
-				.addOption("none", "不上传")
-				.addOption("cloudflare-r2", "Cloudflare R2")
-				.addOption("webdav", "WebDAV")
+				.addOption("none", "Do not upload")
+				.addOption("cloudflare-r2", "Cloudflare r2")
+				.addOption("webdav", "WEBDAV")
 				.setValue(this.plugin.settings.cdnProvider)
 				.onChange(async (value) => {
 					this.plugin.settings.cdnProvider = value as LCGWritingAssistantSettings["cdnProvider"];
@@ -195,8 +195,8 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("公开访问地址")
-			.setDesc("上传完成后写入 Markdown 的 URL 前缀，例如 https://cdn.example.com。")
+			.setName("Public URL prefix")
+			.setDesc("URL prefix written to Markdown after upload, e.g. https://cdn.example.com.")
 			.addText((text) => text
 				.setPlaceholder("https://cdn.example.com")
 				.setValue(this.plugin.settings.cdnBaseUrl)
@@ -227,13 +227,13 @@ export class LCGSettingTab extends PluginSettingTab {
 		}
 
 		new Setting(containerEl)
-			.setName("测试 CDN 上传")
-			.setDesc("上传一个很小的文本文件并尝试删除，用来验证凭据、路径和公开 URL 拼接。")
+			.setName("Test CDN upload")
+			.setDesc("Upload a small text file then delete it to verify credentials, path, and public URL concatenation.")
 			.addButton((button) => button
-				.setButtonText("测试上传")
+				.setButtonText("Test upload")
 				.setCta()
 				.onClick(async () => {
-					button.setDisabled(true).setButtonText("测试中...");
+					button.setDisabled(true).setButtonText("Testing...");
 					try {
 						const result = await testUpload(this.plugin.settings);
 						this.plugin.settings.cdnTestStatus = buildUploadTestStatus(result);
@@ -262,8 +262,8 @@ export class LCGSettingTab extends PluginSettingTab {
 		let pastedCredentials = "";
 
 		new Setting(containerEl)
-			.setName("粘贴 Cloudflare R2 信息")
-			.setDesc("粘贴账号编号、cfat token、R2 endpoint/bucket 或 R2 S3 凭据。插件只解析并填充，不保存粘贴原文。")
+			.setName("Paste cloudflare r2 credentials")
+			.setDesc("Paste account ID, cfat token, r2 endpoint/bucket, or r2 S3 credentials. Plugin only parses and fills, does not save the pasted text.")
 			.addTextArea((text) => {
 				text.inputEl.rows = 6;
 				text
@@ -273,12 +273,12 @@ export class LCGSettingTab extends PluginSettingTab {
 					});
 			})
 			.addButton((button) => button
-				.setButtonText("解析并填充")
+				.setButtonText("Parse and fill")
 				.setCta()
 				.onClick(async () => {
 					const result = await parseR2Credentials(pastedCredentials);
 					if (result.applied.length === 0) {
-						new Notice("没有识别到 R2 凭据。");
+						new Notice("No r2 credentials detected.");
 						return;
 					}
 
@@ -292,10 +292,10 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("R2 endpoint 账号")
-			.setDesc("从 R2 endpoint 自动解析；通常不需要手填。")
+			.setName("R2 endpoint account")
+			.setDesc("Auto-parsed from r2 endpoint; usually no manual entry needed.")
 			.addText((text) => text
-				.setPlaceholder("账号编号")
+				.setPlaceholder("Account ID")
 				.setValue(this.plugin.settings.r2AccountId)
 				.onChange(async (value) => {
 					this.plugin.settings.r2AccountId = value.trim();
@@ -317,9 +317,9 @@ export class LCGSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("R2 access key ID")
-			.setDesc("使用 cfat token 时会通过服务端校验接口自动获取。")
+			.setDesc("Auto-fetched via server-side validation when using cfat token.")
 			.addText((text) => text
-				.setPlaceholder("访问密钥编号")
+				.setPlaceholder("Access key ID")
 				.setValue(this.plugin.settings.r2AccessKeyId)
 				.onChange(async (value) => {
 					this.plugin.settings.r2AccessKeyId = value.trim();
@@ -386,23 +386,23 @@ export class LCGSettingTab extends PluginSettingTab {
 
 	private renderFrontmatterReference(containerEl: HTMLElement): void {
 		new Setting(containerEl)
-			.setName("Front matter 字段说明")
+			.setName("Front matter field descriptions")
 			.setHeading();
 
 		const description = containerEl.createDiv({cls: "lcg-settings-note"});
-		description.setText("用于 Obsidian 写作时查字段含义。字段来源是内置 Hugo/FixIt schema。勾选「加入模板」可将字段加入插入模板。");
+		description.setText("Browse hugo/fixit field descriptions while writing in Obsidian. Enable \"add to template\" to include fields in the insert template.");
 
 		const toolbar = containerEl.createDiv({cls: "lcg-template-toolbar"});
 		const selectedCount = toolbar.createSpan({
 			cls: "lcg-template-toolbar__count",
 			text: `模板已选 ${this.plugin.settings.frontmatterTemplateFieldKeys.length} 个字段`,
 		});
-		this.createButton(toolbar, "恢复推荐模板", async () => {
+		this.createButton(toolbar, "Reset to recommended", async () => {
 			this.plugin.settings.frontmatterTemplateFieldKeys = [...DEFAULT_TEMPLATE_FIELD_KEYS];
 			await this.plugin.saveSettings();
 			this.display();
 		});
-		this.createButton(toolbar, "仅保留必填字段", async () => {
+		this.createButton(toolbar, "Keep required only", async () => {
 			this.plugin.settings.frontmatterTemplateFieldKeys = LCG_FRONTMATTER_FIELDS
 				.filter((field) => field.required)
 				.map((field) => field.key);
@@ -430,13 +430,13 @@ export class LCGSettingTab extends PluginSettingTab {
 			text: this.formatGroupSelectionCount(fields),
 		});
 		const actions = meta.createDiv({cls: "lcg-frontmatter-reference__group-actions"});
-		this.createInlineButton(actions, "全选", async (evt) => {
+		this.createInlineButton(actions, "Select all", async (evt) => {
 			evt.preventDefault();
 			evt.stopPropagation();
 			await this.setTemplateFields(fields.map((field) => field.key), true, selectedCount);
 			this.display();
 		});
-		this.createInlineButton(actions, "取消", async (evt) => {
+		this.createInlineButton(actions, "Deselect", async (evt) => {
 			evt.preventDefault();
 			evt.stopPropagation();
 			await this.setTemplateFields(fields.map((field) => field.key), false, selectedCount);
@@ -623,15 +623,14 @@ export class LCGSettingTab extends PluginSettingTab {
 		this.plugin.settings.cdnTestStatus = null;
 	}
 
-	/* eslint-disable obsidianmd/ui/sentence-case */
 	private renderSupportSection(containerEl: HTMLElement): void {
 		const section = containerEl.createDiv({cls: "lcg-support-section"});
 
 		const label = section.createDiv({cls: "lcg-support-section__label"});
-		label.setText("支持项目");
+		label.setText("Support the project");
 
 		const text = section.createDiv({cls: "lcg-support-section__text"});
-		text.setText("LCG Writing Assistant 是免费开源插件。如果它节省了你的写作和发布时间，可以赞助项目或了解 Pro 路线图。");
+		text.setText("Lcg writing assistant is a free open-source plugin. If it saves you time writing and publishing, consider sponsoring or checking out the pro roadmap.");
 
 		const buttons = section.createDiv({cls: "lcg-support-section__buttons"});
 
@@ -644,11 +643,11 @@ export class LCGSettingTab extends PluginSettingTab {
 
 		const proButton = buttons.createEl("button", {
 			cls: "lcg-support-section__btn",
-			text: "了解 Pro",
+			text: "Learn about pro",
 			attr: {type: "button"},
 		});
 		proButton.addEventListener("click", () => {
-			new Notice("Pro 路线图即将上线，敬请期待。", 5000);
+			new Notice("Pro roadmap coming soon!", 5000);
 		});
 	}
 }
@@ -656,14 +655,14 @@ export class LCGSettingTab extends PluginSettingTab {
 function formatUploadTestNotice(result: UploadTestResult): string {
 	const publicAccess = result.publicAccess.checked
 		? result.publicAccess.ok
-			? "公开 URL 可访问"
-			: `公开 URL 不可访问（HTTP ${result.publicAccess.status ?? "unknown"}）`
-		: "未检查公开 URL";
-	const cleanup = result.deleted ? "测试文件已删除" : "测试文件上传成功，但自动删除失败";
+			? "Public URL accessible"
+			: `Public URL not accessible (HTTP ${result.publicAccess.status ?? "unknown"})`
+		: "Public URL not checked";
+	const cleanup = result.deleted ? "Test file deleted" : "Test file uploaded but auto-delete failed";
 
 	return [
-		"CDN 配置检测完成：",
-		"✓ 测试对象上传成功",
+		"CDN configuration check complete:",
+		"✓ Test object uploaded",
 		result.publicAccess.ok ? `✓ ${publicAccess}` : `✗ ${publicAccess}`,
 		result.deleted ? `✓ ${cleanup}` : `✗ ${cleanup}`,
 		`URL: ${result.url}`,

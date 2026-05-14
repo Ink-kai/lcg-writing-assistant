@@ -18,7 +18,7 @@ function addLCGMenuEntry(
 	menu.addSeparator();
 
 	menu.addItem((item) => item
-		.setTitle("LCG 写作助手")
+		.setTitle("Lcg writing assistant")
 		.setIcon("file-pen-line")
 		.onClick(() => {
 			new FrontmatterAssistantModal(plugin.app, editor, settings, info.file?.path).open();
