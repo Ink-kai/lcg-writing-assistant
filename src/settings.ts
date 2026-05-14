@@ -151,6 +151,8 @@ export class LCGSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 					this.display();
 				}));
+
+		this.renderSupportSection(containerEl);
 	}
 
 	private renderCdnSettings(containerEl: HTMLElement): void {
@@ -253,6 +255,7 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		this.renderCdnTestStatus(containerEl);
+		this.renderSupportSection(containerEl);
 	}
 
 	private renderR2Settings(containerEl: HTMLElement): void {
@@ -387,7 +390,7 @@ export class LCGSettingTab extends PluginSettingTab {
 			.setHeading();
 
 		const description = containerEl.createDiv({cls: "lcg-settings-note"});
-		description.setText("用于 Obsidian 写作时查字段含义。字段来源是内置 Hugo/FixIt schema。勾选“加入模板”可将字段加入插入模板。");
+		description.setText("用于 Obsidian 写作时查字段含义。字段来源是内置 Hugo/FixIt schema。勾选「加入模板」可将字段加入插入模板。");
 
 		const toolbar = containerEl.createDiv({cls: "lcg-template-toolbar"});
 		const selectedCount = toolbar.createSpan({
@@ -411,6 +414,8 @@ export class LCGSettingTab extends PluginSettingTab {
 		for (const [groupLabel, fields] of this.getVisibleFieldsByGroup()) {
 			this.renderFieldGroup(groupsEl, groupLabel, fields, selectedCount);
 		}
+
+		this.renderSupportSection(containerEl);
 	}
 
 	private renderFieldGroup(containerEl: HTMLElement, groupLabel: string, fields: FrontmatterFieldDefinition[], selectedCount: HTMLElement): void {
@@ -616,6 +621,35 @@ export class LCGSettingTab extends PluginSettingTab {
 
 	private clearCdnTestStatus(): void {
 		this.plugin.settings.cdnTestStatus = null;
+	}
+
+	/* eslint-disable obsidianmd/ui/sentence-case */
+	private renderSupportSection(containerEl: HTMLElement): void {
+		const section = containerEl.createDiv({cls: "lcg-support-section"});
+
+		const label = section.createDiv({cls: "lcg-support-section__label"});
+		label.setText("支持项目");
+
+		const text = section.createDiv({cls: "lcg-support-section__text"});
+		text.setText("LCG Writing Assistant 是免费开源插件。如果它节省了你的写作和发布时间，可以赞助项目或了解 Pro 路线图。");
+
+		const buttons = section.createDiv({cls: "lcg-support-section__buttons"});
+
+		// Intentional: anchor element displayed but no click handler needed
+		buttons.createEl("a", {
+			cls: "lcg-support-section__btn",
+			text: "爱发电",
+			attr: {href: "https://afdian.net/@Ink-kai", target: "_blank", rel: "noopener"},
+		});
+
+		const proButton = buttons.createEl("button", {
+			cls: "lcg-support-section__btn",
+			text: "了解 Pro",
+			attr: {type: "button"},
+		});
+		proButton.addEventListener("click", () => {
+			new Notice("Pro 路线图即将上线，敬请期待。", 5000);
+		});
 	}
 }
 

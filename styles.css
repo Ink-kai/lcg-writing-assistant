@@ -602,6 +602,41 @@ If your plugin does not need CSS, delete this file.
 	padding-top: 12px;
 }
 
+.lcg-support-section {
+	border-top: 1px solid var(--background-modifier-border);
+	margin-top: 24px;
+	padding-top: 16px;
+}
+
+.lcg-support-section__label {
+	font-weight: 600;
+	margin-bottom: 6px;
+}
+
+.lcg-support-section__text {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+	margin-bottom: 10px;
+}
+
+.lcg-support-section__buttons {
+	display: flex;
+	gap: 8px;
+}
+
+.lcg-support-section__btn {
+	background: var(--interactive-accent);
+	border-radius: 6px;
+	color: var(--text-on-accent);
+	font-size: var(--font-ui-smaller);
+	padding: 6px 12px;
+	text-decoration: none;
+}
+
+.lcg-support-section__btn:hover {
+	opacity: 0.85;
+}
+
 @media (max-width: 720px) {
 	.lcg-image-input {
 		grid-template-columns: 1fr;
