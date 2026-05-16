@@ -1,6 +1,12 @@
 import esbuild from "esbuild";
 import process from "process";
 import { builtinModules } from 'node:module';
+import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const banner =
 `/*
@@ -11,39 +17,92 @@ if you want to view the source, please visit the github repository of this plugi
 
 const prod = (process.argv[2] === "production");
 
+// CSS bundling plugin
+const cssInjectedCode = `
+(function() {
+  var link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'styles.css';
+  document.head.appendChild(link);
+})();
+`;
+
+const copyStylesPlugin = {
+  name: 'copy-styles',
+  setup(build) {
+    // Find all CSS files in src/styles
+    const stylesDir = join(__dirname, 'src/styles');
+    if (existsSync(stylesDir)) {
+      const cssFiles = readdirSync(stylesDir).filter(f => f.endsWith('.css'));
+
+      // Bundle all CSS into single styles.css
+      let cssContent = '/* Generated CSS - do not edit directly */\n\n';
+
+      for (const file of cssFiles) {
+        const filePath = join(stylesDir, file);
+        const content = readFileSync(filePath, 'utf-8');
+        cssContent += `/* ${file} */\n${content}\n\n`;
+      }
+
+      // Write bundled CSS
+      writeFileSync(join(__dirname, 'styles.css'), cssContent);
+      console.log('Bundled CSS files:', cssFiles.join(', '));
+    }
+
+    // Inject CSS loader code into JS bundle
+    build.onEnd(() => {
+      if (prod) return;
+
+      const jsPath = join(__dirname, 'main.js');
+      if (existsSync(jsPath)) {
+        let jsContent = readFileSync(jsPath, 'utf-8');
+        // Insert CSS injection code before the last closing bracket
+        if (!jsContent.includes('styles.css')) {
+          jsContent = jsContent.replace(
+            /(\}\);?\s*)$/,
+            ';' + cssInjectedCode + '$1'
+          );
+          writeFileSync(jsPath, jsContent);
+        }
+      }
+    });
+  }
+};
+
 const context = await esbuild.context({
-	banner: {
-		js: banner,
-	},
-	entryPoints: ["src/main.ts"],
-	bundle: true,
-	external: [
-		"obsidian",
-		"electron",
-		"@codemirror/autocomplete",
-		"@codemirror/collab",
-		"@codemirror/commands",
-		"@codemirror/language",
-		"@codemirror/lint",
-		"@codemirror/search",
-		"@codemirror/state",
-		"@codemirror/view",
-		"@lezer/common",
-		"@lezer/highlight",
-		"@lezer/lr",
-		...builtinModules],
-	format: "cjs",
-	target: "es2018",
-	logLevel: "info",
-	sourcemap: prod ? false : "inline",
-	treeShaking: true,
-	outfile: "main.js",
-	minify: prod,
+  banner: {
+    js: banner,
+  },
+  entryPoints: ["src/main.ts"],
+  bundle: true,
+  external: [
+    "obsidian",
+    "electron",
+    "@codemirror/autocomplete",
+    "@codemirror/collab",
+    "@codemirror/commands",
+    "@codemirror/language",
+    "@codemirror/lint",
+    "@codemirror/search",
+    "@codemirror/state",
+    "@codemirror/view",
+    "@lezer/common",
+    "@lezer/highlight",
+    "@lezer/lr",
+    ...builtinModules],
+  format: "cjs",
+  target: "es2018",
+  logLevel: "info",
+  sourcemap: prod ? false : "inline",
+  treeShaking: true,
+  outfile: "main.js",
+  minify: prod,
+  plugins: [copyStylesPlugin],
 });
 
 if (prod) {
-	await context.rebuild();
-	process.exit(0);
+  await context.rebuild();
+  process.exit(0);
 } else {
-	await context.watch();
+  await context.watch();
 }

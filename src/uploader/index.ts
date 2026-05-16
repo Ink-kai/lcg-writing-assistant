@@ -4,6 +4,7 @@ import {buildTestUploadInput} from "./path";
 import {deleteFromR2, uploadToR2} from "./r2";
 import {UploadInput, UploadResult, UploadTestResult} from "./types";
 import {deleteFromWebDav, uploadToWebDav} from "./webdav";
+import {t} from "../i18n";
 
 export async function uploadFile(input: UploadInput, settings: LCGWritingAssistantSettings): Promise<UploadResult> {
 	const configurationIssue = getUploadConfigurationIssue(settings);
@@ -27,39 +28,39 @@ export async function uploadFile(input: UploadInput, settings: LCGWritingAssista
 		};
 	}
 
-	throw new Error("请选择 CDN 上传方式。");
+	throw new Error(t("uploader.selectMethod"));
 }
 
 export function getUploadConfigurationIssue(settings: LCGWritingAssistantSettings): string | null {
 	if (!settings.cdnEnabled) {
-		return "CDN 上传未开启。";
+		return t("uploader.notEnabled");
 	}
 
 	if (settings.cdnProvider === "none") {
-		return "请选择 CDN 上传方式。";
+		return t("uploader.selectMethod");
 	}
 
 	if (!settings.cdnBaseUrl.trim()) {
-		return "CDN 公开访问地址不能为空。";
+		return t("uploader.publicUrlRequired");
 	}
 
 	if (settings.cdnProvider === "cloudflare-r2") {
 		if (!settings.r2AccountId.trim()) {
-			return "Cloudflare R2 Account ID 不能为空。";
+			return t("uploader.r2AccountId");
 		}
 		if (!settings.r2Bucket.trim()) {
-			return "Cloudflare R2 bucket 不能为空。";
+			return t("uploader.r2Bucket");
 		}
 		if (!settings.r2AccessKeyId.trim()) {
-			return "Cloudflare R2 Access Key ID 不能为空。";
+			return t("uploader.r2AccessKeyId");
 		}
 		if (!settings.r2SecretAccessKey.trim()) {
-			return "Cloudflare R2 Secret Access Key 不能为空。";
+			return t("uploader.r2SecretAccessKey");
 		}
 	}
 
 	if (settings.cdnProvider === "webdav" && !settings.webdavEndpoint.trim()) {
-		return "WebDAV 地址不能为空。";
+		return t("uploader.webdavUrl");
 	}
 
 	return null;

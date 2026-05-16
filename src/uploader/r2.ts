@@ -2,6 +2,7 @@ import {requestUrl} from "obsidian";
 import {LCGWritingAssistantSettings} from "../settings";
 import {buildUploadTarget} from "./path";
 import {UploadInput, UploadTarget} from "./types";
+import {t} from "../i18n";
 
 const SERVICE = "s3";
 const REGION = "auto";
@@ -29,7 +30,7 @@ export async function uploadToR2(input: UploadInput, settings: LCGWritingAssista
 	});
 
 	if (response.status < 200 || response.status >= 300) {
-		throw new Error(`Cloudflare R2 上传失败：HTTP ${response.status} ${response.text}`);
+		throw new Error(t("uploader.r2UploadFailed", {status: response.status, text: response.text}));
 	}
 
 	return target;
@@ -55,19 +56,19 @@ export async function deleteFromR2(key: string, settings: LCGWritingAssistantSet
 
 function assertR2Settings(settings: LCGWritingAssistantSettings): void {
 	if (!settings.r2AccountId.trim()) {
-		throw new Error("Cloudflare R2 Account ID 不能为空。");
+		throw new Error(t("uploader.r2AccountId"));
 	}
 	if (!settings.r2Bucket.trim()) {
-		throw new Error("Cloudflare R2 bucket 不能为空。");
+		throw new Error(t("uploader.r2Bucket"));
 	}
 	if (!settings.r2AccessKeyId.trim()) {
-		throw new Error("Cloudflare R2 Access Key ID 不能为空。");
+		throw new Error(t("uploader.r2AccessKeyId"));
 	}
 	if (!settings.r2SecretAccessKey.trim()) {
-		throw new Error("Cloudflare R2 Secret Access Key 不能为空。");
+		throw new Error(t("uploader.r2SecretAccessKey"));
 	}
 	if (!settings.cdnBaseUrl.trim()) {
-		throw new Error("CDN 公开访问地址不能为空。");
+		throw new Error(t("uploader.publicUrlRequired"));
 	}
 }
 

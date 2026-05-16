@@ -14,7 +14,8 @@ export type FrontmatterFieldGroup =
 	| "seo"
 	| "advanced"
 	| "external"
-	| "compatibility";
+	| "compatibility"
+	| "other";
 
 export type FrontmatterFieldSource =
 	| "obsidian"

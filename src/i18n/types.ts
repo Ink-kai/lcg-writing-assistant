@@ -19,6 +19,8 @@ export interface Translations {
 	"slash.frontmatterEditorDesc": string;
 	"slash.validate": string;
 	"slash.validateDesc": string;
+	"slash.uploadAll": string;
+	"slash.uploadAllDesc": string;
 
 	// Panel
 	"panel.title": string;
@@ -110,6 +112,7 @@ export interface Translations {
 	"notice.pasteImageSuccess": string;
 	"notice.pasteImageFailed": string;
 	"notice.pasteImageFallback": string; // {issue}
+	"notice.uploadAll": string;
 
 	// Uploader
 	"uploader.selectMethod": string;
@@ -127,6 +130,11 @@ export interface Translations {
 
 	// Settings
 	"settings.general": string;
+	"settings.language": string;
+	"settings.languageDesc": string;
+	"settings.triggerPhrase": string;
+	"settings.triggerPhraseDesc": string;
+	"settings.triggerPhrasePlaceholder": string;
 	"settings.autoOpenPanel": string;
 	"settings.autoOpenPanelDesc": string;
 	"settings.cdn": string;
@@ -134,10 +142,31 @@ export interface Translations {
 	"settings.imageUpload": string;
 	"settings.pasteImage": string;
 	"settings.pasteImageDesc": string;
+	"settings.uploadMethod": string;
+	"settings.uploadMethodDesc": string;
+	"settings.uploadMethodNone": string;
+	"settings.languageEn": string;
+	"settings.languageZh": string;
+	"settings.cloudflare": string;
+	"settings.webdav": string;
+	"settings.testing": string;
+	"settings.parseAndFill": string;
+	"settings.noCredentialsFound": string;
+	"settings.publicAccessOk": string;
+	"settings.publicAccessNotChecked": string;
+	"settings.testFileDeleted": string;
+	"settings.testFileNotDeleted": string;
+	"settings.cdnCheckComplete": string;
+	"settings.testObjectUploaded": string;
+	"settings.url": string;
+	"settings.publicUrl": string;
+	"settings.publicUrlDesc": string;
+	"settings.publicUrlPlaceholder": string;
 	"settings.uploadPathPrefix": string;
 	"settings.uploadPathPrefixDesc": string;
 	"settings.uploadPathPrefixPlaceholder": string;
-	"settings.cdnTest": string;
+	"settings.testCdn": string;
+	"settings.testCdnDesc": string;
 	"settings.cdnTestButton": string;
 	"settings.cdnTestSuccess": string;
 	"settings.cdnTestFailed": string;
@@ -148,11 +177,17 @@ export interface Translations {
 	"settings.cdnPublicAccessNotChecked": string;
 	"settings.cdnTestFileDeleted": string;
 	"settings.cdnTestFileNotDeleted": string;
+	"settings.r2Credentials": string;
+	"settings.r2CredentialsDesc": string;
+	"settings.r2CredentialsPlaceholder": string;
 	"settings.r2Endpoint": string;
 	"settings.r2EndpointDesc": string;
+	"settings.r2EndpointPlaceholder": string;
+	"settings.r2Bucket": string;
 	"settings.r2BucketName": string;
 	"settings.r2BucketPlaceholder": string;
 	"settings.r2AccessKey": string;
+	"settings.r2AccessKeyDesc": string;
 	"settings.r2AccessKeyPlaceholder": string;
 	"settings.r2SecretKey": string;
 	"settings.r2SecretKeyPlaceholder": string;
@@ -161,6 +196,7 @@ export interface Translations {
 	"settings.r2CredentialsMissing": string; // {fields}
 	"settings.webdavUrl": string;
 	"settings.webdavUrlDesc": string;
+	"settings.webdavUrlPlaceholder": string;
 	"settings.webdavUsername": string;
 	"settings.webdavUsernameDesc": string;
 	"settings.webdavUsernamePlaceholder": string;
@@ -184,4 +220,88 @@ export interface Translations {
 	"error.readFailed": string; // {message}
 	"error.saveFailed": string; // {message}
 	"error.unknown": string;
+
+	// Field Labels
+	"field.group.required": string;
+	"field.group.recommended": string;
+	"field.group.images": string;
+	"field.group.fixit": string;
+	"field.group.visibility": string;
+	"field.group.seo": string;
+	"field.group.advanced": string;
+	"field.group.external": string;
+	"field.group.compatibility": string;
+	"field.group.other": string;
+	"field.source.obsidian": string;
+	"field.source.hugo": string;
+	"field.source.theme": string;
+	"field.source.custom": string;
+	"field.label.title": string;
+	"field.label.date": string;
+	"field.label.draft": string;
+	"field.label.description": string;
+	"field.label.summary": string;
+	"field.label.categories": string;
+	"field.label.tags": string;
+	"field.label.series": string;
+	"field.label.collections": string;
+	"field.label.featuredImage": string;
+	"field.label.featuredImagePreview": string;
+	"field.label.toc": string;
+	"field.label.math": string;
+	"field.label.lightgallery": string;
+	"field.label.comment": string;
+	"field.label.hiddenFromHomePage": string;
+	"field.label.hiddenFromSearch": string;
+	"field.label.hiddenFromFeed": string;
+	"field.label.hiddenFromRelated": string;
+	"field.label.slug": string;
+	"field.label.url": string;
+	"field.label.keywords": string;
+	"field.label.lastmod": string;
+	"field.label.subtitle": string;
+	"field.label.author": string;
+	"field.label.weight": string;
+	"field.label.password": string;
+	"field.label.message": string;
+	"field.label.repost": string;
+	"field.label.externalUrl": string;
+	"field.label.build": string;
+	"field.label.showTableOfContents": string;
+	"field.label.showReadingTime": string;
+	"field.label.showWordCount": string;
+	"field.desc.title": string;
+	"field.desc.date": string;
+	"field.desc.draft": string;
+	"field.desc.description": string;
+	"field.desc.summary": string;
+	"field.desc.categories": string;
+	"field.desc.tags": string;
+	"field.desc.series": string;
+	"field.desc.collections": string;
+	"field.desc.featuredImage": string;
+	"field.desc.featuredImagePreview": string;
+	"field.desc.toc": string;
+	"field.desc.math": string;
+	"field.desc.lightgallery": string;
+	"field.desc.comment": string;
+	"field.desc.hiddenFromHomePage": string;
+	"field.desc.hiddenFromSearch": string;
+	"field.desc.hiddenFromFeed": string;
+	"field.desc.hiddenFromRelated": string;
+	"field.desc.slug": string;
+	"field.desc.url": string;
+	"field.desc.keywords": string;
+	"field.desc.lastmod": string;
+	"field.desc.subtitle": string;
+	"field.desc.author": string;
+	"field.desc.weight": string;
+	"field.desc.password": string;
+	"field.desc.message": string;
+	"field.desc.repost": string;
+	"field.desc.externalUrl": string;
+	"field.desc.build": string;
+	"field.desc.showTableOfContents": string;
+	"field.desc.showReadingTime": string;
+	"field.desc.showWordCount": string;
 }

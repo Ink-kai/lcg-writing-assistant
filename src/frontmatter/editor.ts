@@ -7,6 +7,7 @@ import {
 	REQUIRED_FIELD_KEYS,
 } from "./schema";
 import {FrontmatterFieldDefinition, ParsedFrontmatter, ReadFieldValue, ValidationIssue} from "./types";
+import {t} from "../i18n";
 
 export interface FrontmatterFieldUpdate {
 	field: FrontmatterFieldDefinition;
@@ -53,7 +54,7 @@ export function cursorIsInFrontmatter(editor: Editor, cursor: EditorPosition): b
 export function insertFrontmatterTemplate(editor: Editor, fieldKeys: readonly string[] = DEFAULT_TEMPLATE_FIELD_KEYS): void {
 	const frontmatter = parseFrontmatter(editor);
 	if (frontmatter.exists) {
-		new Notice("当前笔记已有 front matter。");
+		new Notice(t("editor.frontmatterExists"));
 		return;
 	}
 
@@ -62,7 +63,7 @@ export function insertFrontmatterTemplate(editor: Editor, fieldKeys: readonly st
 		.map((key) => getFieldDefinition(key))
 		.filter((field): field is FrontmatterFieldDefinition => field !== undefined);
 	if (fields.length === 0) {
-		new Notice("模板字段为空，请先在写作助手设置中选择字段。");
+		new Notice(t("editor.templateEmpty"));
 		return;
 	}
 
@@ -86,7 +87,7 @@ export function insertOrUpdateField(editor: Editor, field: FrontmatterFieldDefin
 
 	if (!frontmatter.exists) {
 		if (!autoCreateFrontmatter) {
-			new Notice("当前笔记没有 front matter，且自动创建已关闭。");
+			new Notice(t("editor.noFrontmatterAutoCreate"));
 			return;
 		}
 		const fieldLine = formatFieldLine(field, now);
@@ -98,7 +99,7 @@ export function insertOrUpdateField(editor: Editor, field: FrontmatterFieldDefin
 
 	const existingLine = findTopLevelFieldLine(frontmatter, field.key);
 	if (existingLine !== null) {
-		new Notice(`${field.key} 已存在，未重复插入。`);
+		new Notice(t("editor.fieldExists", {key: field.key}));
 		editor.setCursor({line: existingLine, ch: editor.getLine(existingLine).length});
 		return;
 	}
@@ -112,7 +113,7 @@ export function insertOrUpdateField(editor: Editor, field: FrontmatterFieldDefin
 export function applyFrontmatterUpdates(editor: Editor, updates: FrontmatterFieldUpdate[], autoCreateFrontmatter: boolean): void {
 	const meaningfulUpdates = updates.filter((update) => update.value !== undefined && update.value.trim().length > 0);
 	if (meaningfulUpdates.length === 0) {
-		new Notice("没有可写入的 front matter 字段。");
+		new Notice(t("editor.noFieldsToWrite"));
 		return;
 	}
 
@@ -121,7 +122,7 @@ export function applyFrontmatterUpdates(editor: Editor, updates: FrontmatterFiel
 
 	if (!frontmatter.exists) {
 		if (!autoCreateFrontmatter) {
-			new Notice("当前笔记没有 front matter，且自动创建已关闭。");
+			new Notice(t("editor.noFrontmatterAutoCreate"));
 			return;
 		}
 
@@ -196,7 +197,7 @@ export function validateCurrentNote(editor: Editor): ValidationIssue[] {
 	if (!frontmatter.exists) {
 		return [
 			{
-				message: "缺少 YAML front matter。",
+				message: t("validation.missingFrontmatter"),
 				severity: "error",
 			},
 		];
@@ -207,7 +208,7 @@ export function validateCurrentNote(editor: Editor): ValidationIssue[] {
 		if (value === null || value.length === 0 || value === "\"\"" || value === "''") {
 			issues.push({
 				field: key,
-				message: `缺少必填字段或字段为空：${key}`,
+				message: t("validation.missingFields", {key}),
 				severity: "error",
 			});
 		}
@@ -217,7 +218,7 @@ export function validateCurrentNote(editor: Editor): ValidationIssue[] {
 	if (dateValue && Number.isNaN(Date.parse(stripYamlQuotes(dateValue)))) {
 		issues.push({
 			field: "date",
-			message: "date 不是可解析的日期格式。",
+			message: t("validation.invalidDate"),
 			severity: "error",
 		});
 	}
@@ -226,7 +227,7 @@ export function validateCurrentNote(editor: Editor): ValidationIssue[] {
 	if (draftValue === "true") {
 		issues.push({
 			field: "draft",
-			message: "当前文章仍是草稿：draft 为 true。",
+			message: t("validation.draft"),
 			severity: "warning",
 		});
 	}
@@ -238,7 +239,7 @@ export function validateCurrentNote(editor: Editor): ValidationIssue[] {
 		if (!fieldLooksLikeArray(frontmatter, key)) {
 			issues.push({
 				field: key,
-				message: `${key} 建议使用数组格式。`,
+				message: t("validation.arrayRecommended", {key}),
 				severity: "warning",
 			});
 		}
@@ -248,7 +249,7 @@ export function validateCurrentNote(editor: Editor): ValidationIssue[] {
 		if (fieldExists(frontmatter, key)) {
 			issues.push({
 				field: key,
-				message: `${key} 是旧兼容字段，FixIt 推荐使用新版字段或站点默认配置。`,
+				message: t("validation.deprecatedField", {key}),
 				severity: "warning",
 			});
 		}

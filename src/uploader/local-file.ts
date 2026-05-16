@@ -1,6 +1,7 @@
 import {Notice, TFile, Vault} from "obsidian";
 import {LCGWritingAssistantSettings} from "../settings";
 import {getUploadConfigurationIssue, uploadFile} from "./index";
+import {t} from "../i18n";
 
 export interface ImageUploadResult {
 	markdownUrl: string;
@@ -16,7 +17,7 @@ export async function uploadImageInput(
 ): Promise<ImageUploadResult | null> {
 	const configurationIssue = getUploadConfigurationIssue(settings);
 	if (configurationIssue) {
-		new Notice(`${configurationIssue} 未上传图片。`, 8000);
+		new Notice(t("uploader.localNotUpload", {issue: configurationIssue}), 8000);
 		return null;
 	}
 

@@ -1,6 +1,6 @@
 {
   "name": "lcg-writing-assistant",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "description": "Slash menu and front matter helpers for writing Hugo/FixIt posts.",
   "author": "Ink-kai",
   "main": "main.js",

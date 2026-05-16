@@ -2,6 +2,7 @@ import {requestUrl} from "obsidian";
 import {LCGWritingAssistantSettings} from "../settings";
 import {UploadInput, UploadTarget} from "./types";
 import {buildUploadTarget} from "./path";
+import {t} from "../i18n";
 
 export async function uploadToWebDav(input: UploadInput, settings: LCGWritingAssistantSettings): Promise<UploadTarget> {
 	assertWebDavSettings(settings);
@@ -18,7 +19,7 @@ export async function uploadToWebDav(input: UploadInput, settings: LCGWritingAss
 	});
 
 	if (response.status < 200 || response.status >= 300) {
-		throw new Error(`WebDAV 上传失败：HTTP ${response.status} ${response.text}`);
+		throw new Error(t("uploader.webdavUploadFailed", {status: response.status, text: response.text}));
 	}
 
 	return target;
@@ -53,17 +54,17 @@ async function ensureWebDavDirectories(settings: LCGWritingAssistantSettings, ke
 		}
 
 		if (response.status < 200 || response.status >= 300) {
-			throw new Error(`WebDAV 创建目录失败：${current}，HTTP ${response.status}`);
+			throw new Error(t("uploader.webdavCreateDirFailed", {path: current, status: response.status}));
 		}
 	}
 }
 
 function assertWebDavSettings(settings: LCGWritingAssistantSettings): void {
 	if (!settings.webdavEndpoint.trim()) {
-		throw new Error("WebDAV 地址不能为空。");
+		throw new Error(t("uploader.webdavUrl"));
 	}
 	if (!settings.cdnBaseUrl.trim()) {
-		throw new Error("CDN 公开访问地址不能为空。");
+		throw new Error(t("uploader.publicUrlRequired"));
 	}
 }
 

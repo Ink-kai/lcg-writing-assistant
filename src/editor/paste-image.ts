@@ -1,6 +1,7 @@
 import {Editor, MarkdownFileInfo, Notice, Plugin} from "obsidian";
 import {LCGWritingAssistantSettings} from "../settings";
 import {getUploadConfigurationIssue, uploadFile} from "../uploader";
+import {t} from "../i18n";
 
 export function registerPasteImageHandler(plugin: Plugin, getSettings: () => LCGWritingAssistantSettings): void {
 	plugin.registerEvent(plugin.app.workspace.on("editor-paste", (evt, editor, info) => {
@@ -25,19 +26,19 @@ async function handlePaste(
 
 	const configurationIssue = getUploadConfigurationIssue(settings);
 	if (configurationIssue) {
-		new Notice(`${configurationIssue} 已保留 Obsidian 默认粘贴。`, 8000);
+		new Notice(t("notice.pasteImageFallback", {issue: configurationIssue}), 8000);
 		return;
 	}
 
 	evt.preventDefault();
 
 	try {
-		new Notice("正在上传剪贴板图片...");
+		new Notice(t("notice.pasteImageUpload"));
 		const result = await uploadClipboardImage(imageFile, info.file?.path, settings);
 		editor.replaceSelection(`![${imageFile.name}](${result.url})`);
-		new Notice("图片已上传并插入。");
+		new Notice(t("notice.pasteImageSuccess"));
 	} catch (error) {
-		new Notice(error instanceof Error ? error.message : "剪贴板图片上传失败。", 8000);
+		new Notice(error instanceof Error ? error.message : t("notice.pasteImageFailed"), 8000);
 	}
 }
 
