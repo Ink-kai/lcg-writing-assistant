@@ -3,7 +3,7 @@
 	"name": "LCG Writing Assistant",
 	"version": "1.0.0",
 	"minAppVersion": "1.5.0",
-	"description": "Slash menu and front matter helpers for writing Hugo/FixIt posts.",
+	"description": "Front matter templates, visual editor, and CDN image upload for Hugo/FixIt writers.",
 	"author": "Ink-kai",
 	"isDesktopOnly": false,
 	"fundingUrl": "https://afdian.net/@Ink-kai"

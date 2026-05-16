@@ -2,9 +2,20 @@
 
 [中文说明](README-zh.md)
 
-LCG Writing Assistant is a free, open-source Obsidian plugin for writing Hugo/FixIt posts from Obsidian.
+LCG Writing Assistant is a free, open-source Obsidian plugin for Hugo/FixIt writers who publish from Obsidian.
 
-It focuses on single-post editing: front matter templates, field explanations, writing helpers, validation, and optional image upload to a CDN you configure.
+**Stop memorizing front matter field names. Stop fixing YAML errors. Stop manually uploading images.**
+
+This plugin helps you insert front matter templates, edit fields visually, understand what each field means, and upload images to Cloudflare R2 or WebDAV — all without leaving Obsidian.
+
+## Why Hugo Writers Need This
+
+- **No more guessing field names** — Type `/lcg` and select what you need
+- **No more YAML errors** — Visual editor prevents syntax mistakes
+- **No more path hunting** — Images upload automatically and paths are inserted
+- **No more docs翻来翻去** — Field descriptions explain what each field does
+
+Works with Hugo, FixIt, LoveIt, PaperMod, and any Hugo theme.
 
 ## Features
 
@@ -85,6 +96,42 @@ Image fields accept:
 
 If CDN upload is enabled and configured, selected or pasted image files are uploaded and the resulting URL is filled into the field.
 
+## Examples
+
+### Example 1: Insert front matter template
+
+1. Create a new note in Obsidian
+2. Type `/lcg` in the editor
+3. Select **插入 front matter**
+4. The plugin inserts a template like:
+   ```yaml
+   ---
+   title: ""
+   date: 2026-05-16
+   tags: []
+   categories: []
+   ---
+   ```
+5. Fill in the fields using the visual editor
+
+### Example 2: Validate a post before publishing
+
+1. Write your Hugo post with front matter
+2. Type `/lcg` and select **校验当前文章**
+3. The plugin checks for:
+   - Required fields (title, date)
+   - Valid date format (ISO 8601)
+   - Draft status
+   - Array field format
+4. Shows a notice with validation results
+
+### Example 3: Upload images automatically
+
+1. Enable CDN upload in settings (Cloudflare R2 or WebDAV)
+2. Paste an image into your Markdown note
+3. The plugin automatically uploads the image and replaces the local path with the CDN URL
+4. Your Hugo site displays the image from the CDN
+
 ## CDN Upload
 
 CDN upload is off by default.
@@ -105,6 +152,35 @@ The plugin stores provider settings in Obsidian plugin data. These settings may 
 
 Cloudflare `cfat_...` tokens pasted into settings are parsed and are not saved as the original token string.
 
+### Quick Setup: Cloudflare R2
+
+1. **Create a Cloudflare account** if you don't have one
+2. **Create an R2 bucket** in Cloudflare dashboard → R2 → Create bucket
+3. **Create an API token**: R2 → Settings → Tokens → Create API token
+   - Select "Edit" template or create custom with `Object Read` + `Object Write` permissions
+4. **Copy these values**:
+   - Account ID (from R2 overview page)
+   - Bucket name
+   - Access Key ID
+   - Secret Access Key
+5. **Configure in plugin settings**:
+   - Enable CDN upload
+   - Enter your R2 credentials
+   - Set public URL (e.g., `https://your-domain.com`)
+   - Click "Test" to verify
+
+### Quick Setup: WebDAV
+
+1. **Use any WebDAV server** (Nextcloud, Synology NAS, Linux server with Apache/Nginx)
+2. **Get your WebDAV URL**, e.g., `https://your-server.com/remote.php/dav/files/username/`
+3. **Create credentials** in your WebDAV service
+4. **Configure in plugin settings**:
+   - Enable CDN upload
+   - Select WebDAV provider
+   - Enter endpoint, username, and password
+   - Set public URL (your WebDAV server's public URL)
+   - Click "Test" to verify
+
 ## Privacy and Network Use
 
 This plugin does not collect telemetry.
@@ -122,28 +198,9 @@ Image file data is sent only to the CDN/WebDAV endpoint configured by the user.
 
 Credentials are stored locally in Obsidian plugin data. Anyone with access to your vault configuration files may be able to read them.
 
-## Free and Pro
+## Support
 
-This community plugin is the free, open-source version.
-
-The free version is intended to remain useful for single-post editing:
-
-- `/lcg` menu
-- front matter editing
-- field explanations
-- template configuration
-- basic validation
-- manually configured CDN upload
-
-Future paid features, if released, should focus on batch and publishing workflows, such as:
-
-- scanning Hugo/FixIt project configuration
-- batch front matter conversion
-- batch image upload and path replacement
-- multi-site publishing workflows
-- advanced publishing checks
-
-The free version should not require an account or license key.
+This plugin is free and open source. If you find it useful, consider supporting its development.
 
 ## Development
 
