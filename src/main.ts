@@ -18,6 +18,7 @@ export default class LCGWritingAssistantPlugin extends Plugin {
 
 		this.addSettingTab(new LCGSettingTab(this.app, this));
 
+		// eslint-disable-next-line obsidianmd/ui/sentence-case
 		new Notice("LCG 写作助手已加载！输入 /lcg 开始使用。");
 	}
 
