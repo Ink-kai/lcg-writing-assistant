@@ -5,7 +5,7 @@
       "allowAutoFix": true,
       "mode": "loose",
       "ignoreRegex": "[\\u4e00-\\u9fff]",
-      "brands": ["CDN", "R2", "S3", "WebDAV", "API", "URL"]
+      "brands": ["CDN", "R2", "S3", "WebDAV", "API", "URL", "LCG"]
     }],
     "obsidianmd/settings-tab/no-problematic-settings-headings": "off"
   }

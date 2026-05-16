@@ -20,7 +20,7 @@ export class LCGPanelView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return "LCG 写作助手";
+		return "Lcg writing assistant";
 	}
 
 	async onOpen(): Promise<void> {
@@ -40,8 +40,8 @@ export class LCGPanelView extends ItemView {
 
 	private renderPlaceholder(): void {
 		const placeholder = this.contentEl.createDiv({cls: "lcg-panel__placeholder"});
-		placeholder.createEl("p", {text: "请打开一篇笔记"});
-		placeholder.createEl("p", {cls: "lcg-panel__hint", text: "LCG 面板将显示当前笔记的 front matter"});
+		placeholder.createEl("p", {text: "Open a note to get started"});
+		placeholder.createEl("p", {cls: "lcg-panel__hint", text: "Lcg panel will display the front matter of the current note"});
 	}
 
 	private setupEventListeners(): void {
@@ -102,7 +102,7 @@ export class LCGPanelView extends ItemView {
 			return;
 		}
 
-		this.renderFields(file.path);
+		void this.renderFields(file.path);
 	}
 
 	private async renderFields(filePath: string): Promise<void> {
@@ -111,7 +111,7 @@ export class LCGPanelView extends ItemView {
 		try {
 			const file = this.app.vault.getFileByPath(filePath);
 			if (!file) {
-				fieldsContainer.createEl("p", {text: "无法读取文件"});
+				fieldsContainer.createEl("p", {text: "Cannot read file"});
 				return;
 			}
 
@@ -196,7 +196,7 @@ export function togglePanel(app: App): void {
 	}
 
 	const leaf = workspace.getLeaf(true);
-	leaf.setViewState({type: LCG_PANEL_VIEW_TYPE});
+	void leaf.setViewState({type: LCG_PANEL_VIEW_TYPE});
 }
 
 export function openPanel(app: App): void {
@@ -209,5 +209,5 @@ export function openPanel(app: App): void {
 	}
 
 	const leaf = workspace.getLeaf(true);
-	leaf.setViewState({type: LCG_PANEL_VIEW_TYPE});
+	void leaf.setViewState({type: LCG_PANEL_VIEW_TYPE});
 }

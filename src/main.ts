@@ -19,20 +19,20 @@ export default class LCGWritingAssistantPlugin extends Plugin {
 
 		this.registerView(LCG_PANEL_VIEW_TYPE, (leaf) => new LCGPanelView(leaf, this.app, this.settings));
 
-		this.addRibbonIcon("panel-stats", "LCG 面板", () => {
+		// eslint-disable-next-line obsidianmd/ui/sentence-case
+		this.addRibbonIcon("panel-stats", "LCG Panel", () => {
 			openPanel(this.app);
 		});
 
 		this.addCommand({
 			id: "open-lcg-panel",
-			name: "打开 LCG 面板",
+			name: "Open lcg panel",
 			callback: () => openPanel(this.app),
 		});
 
 		this.addSettingTab(new LCGSettingTab(this.app, this));
 
-		// eslint-disable-next-line obsidianmd/ui/sentence-case
-		new Notice("LCG 写作助手已加载！输入 /lcg 开始使用。");
+		new Notice("Lcg writing assistant loaded! Type /lcg to get started.");
 	}
 
 	async loadSettings(): Promise<void> {
