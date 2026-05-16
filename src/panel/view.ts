@@ -1,5 +1,6 @@
 import {App, ItemView, TFile, WorkspaceLeaf} from "obsidian";
 import {LCGWritingAssistantSettings} from "../settings";
+import {t} from "../i18n";
 import {FrontmatterAssistantModal} from "../ui/frontmatter-modal";
 
 export const LCG_PANEL_VIEW_TYPE = "lcg-panel-view";
