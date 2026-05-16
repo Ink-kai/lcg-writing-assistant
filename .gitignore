@@ -38,9 +38,7 @@ data.json
 # Agent notes and internal planning docs
 CLAUDE.md
 requirement.md
-docs/monetization-plan.md
-docs/funding-and-paid-flow.md
-docs/release-checklist.md
+docs/
 
 # OS files
 .DS_Store
@@ -48,4 +46,4 @@ Thumbs.db
 .gstack/
 
 # OPC outputs
-opc-doc/outputs/
+opc-doc/
