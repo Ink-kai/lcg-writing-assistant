@@ -45,3 +45,4 @@ docs/release-checklist.md
 # OS files
 .DS_Store
 Thumbs.db
+.gstack/
