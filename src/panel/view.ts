@@ -128,7 +128,7 @@ export class LCGPanelView extends ItemView {
 				this.parseAndRenderFields(frontmatter, fieldsContainer);
 			}
 		} catch (error) {
-			fieldsContainer.createEl("p", {text: `读取失败: ${error instanceof Error ? error.message : "未知错误"}`});
+			fieldsContainer.createEl("p", {text: t("error.readFailed", {message: error instanceof Error ? error.message : t("error.unknown")})});
 		}
 	}
 
@@ -199,15 +199,19 @@ export function togglePanel(app: App): void {
 	void leaf.setViewState({type: LCG_PANEL_VIEW_TYPE});
 }
 
-export function openPanel(app: App): void {
+export async function openPanel(app: App): Promise<void> {
 	const {workspace} = app;
 	const existingLeaf = workspace.getLeavesOfType(LCG_PANEL_VIEW_TYPE)[0];
 
 	if (existingLeaf) {
 		workspace.setActiveLeaf(existingLeaf);
+		void workspace.revealLeaf(existingLeaf);
 		return;
 	}
 
-	const leaf = workspace.getLeaf(true);
-	void leaf.setViewState({type: LCG_PANEL_VIEW_TYPE});
+	const leaf = workspace.getRightLeaf(false);
+	if (leaf) {
+		await leaf.setViewState({type: LCG_PANEL_VIEW_TYPE, active: true});
+		void workspace.revealLeaf(leaf);
+	}
 }

@@ -19,15 +19,24 @@ export default class LCGWritingAssistantPlugin extends Plugin {
 
 		this.registerView(LCG_PANEL_VIEW_TYPE, (leaf) => new LCGPanelView(leaf, this.app, this.settings));
 
+		// Auto open panel when file opens
+		this.registerEvent(
+			this.app.workspace.on("file-open", () => {
+				if (this.settings.autoOpenPanel) {
+					void openPanel(this.app);
+				}
+			})
+		);
+
 		// eslint-disable-next-line obsidianmd/ui/sentence-case
-		this.addRibbonIcon("panel-stats", "LCG Panel", () => {
-			openPanel(this.app);
+		this.addRibbonIcon("file-text", "LCG Panel", () => {
+			void openPanel(this.app);
 		});
 
 		this.addCommand({
 			id: "open-lcg-panel",
 			name: "Open lcg panel",
-			callback: () => openPanel(this.app),
+			callback: () => void openPanel(this.app),
 		});
 
 		this.addSettingTab(new LCGSettingTab(this.app, this));

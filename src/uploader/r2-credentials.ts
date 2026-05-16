@@ -1,5 +1,6 @@
 import {requestUrl} from "obsidian";
 import {LCGWritingAssistantSettings} from "../settings";
+import {t} from "../i18n";
 
 export interface ParsedR2Credentials {
 	accountId?: string;
@@ -258,7 +259,7 @@ function getAppliedLabels(credentials: ParsedR2Credentials): string[] {
 		labels.push("Secret Access Key");
 	}
 	if (credentials.publicBaseUrl) {
-		labels.push("公开访问地址");
+		labels.push(t("settings.cdnPublicAccess"));
 	}
 	return labels;
 }

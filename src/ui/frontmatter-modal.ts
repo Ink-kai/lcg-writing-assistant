@@ -13,6 +13,7 @@ import {LCGWritingAssistantSettings} from "../settings";
 import {deleteFromR2} from "../uploader/r2";
 import {uploadImageInput} from "../uploader/local-file";
 import {deleteFromWebDav} from "../uploader/webdav";
+import {t} from "../i18n";
 
 interface FieldControl {
 	field: FrontmatterFieldDefinition;
@@ -56,7 +57,7 @@ export class FrontmatterAssistantModal extends Modal {
 	onOpen(): void {
 		this.closed = false;
 		this.committed = false;
-		this.setTitle("Front matter 编辑");
+		this.setTitle(t("modal.frontmatterEditor"));
 		this.contentEl.empty();
 		this.contentEl.addClass("lcg-frontmatter-modal");
 		this.initializeControls();
@@ -65,7 +66,7 @@ export class FrontmatterAssistantModal extends Modal {
 		this.renderTabs();
 		this.contentEl.createDiv({
 			cls: "lcg-frontmatter-modal__hint",
-			text: "填写的字段会写入 front matter；留空的字段不会改动。",
+			text: t("modal.fieldHint"),
 		});
 		this.bodyEl = this.contentEl.createDiv({cls: "lcg-frontmatter-modal__body"});
 		this.renderActiveTab();
@@ -106,16 +107,16 @@ export class FrontmatterAssistantModal extends Modal {
 		const section = this.contentEl.createDiv({cls: "lcg-frontmatter-modal__quick"});
 		const actions = section.createDiv({cls: "lcg-frontmatter-modal__actions"});
 
-		this.createActionButton(actions, "填入模板默认值", () => {
+		this.createActionButton(actions, t("modal.fillDefaults"), () => {
 			const templateKeys = this.settings.frontmatterTemplateFieldKeys.length > 0
 				? this.settings.frontmatterTemplateFieldKeys
 				: DEFAULT_TEMPLATE_FIELD_KEYS;
 			this.fillDefaultValues(templateKeys);
 		});
-		this.createActionButton(actions, "填入必填默认值", () => {
+		this.createActionButton(actions, t("modal.fillRequiredDefaults"), () => {
 			this.fillDefaultValues(LCG_FRONTMATTER_FIELDS.filter((field) => field.required).map((field) => field.key));
 		});
-		this.createActionButton(actions, "清空填写", () => {
+		this.createActionButton(actions, t("modal.clearAll"), () => {
 			for (const control of this.controls.values()) {
 				this.clearControl(control);
 			}
@@ -229,7 +230,7 @@ export class FrontmatterAssistantModal extends Modal {
 			});
 			setting.addButton((btn) => {
 				btn.setIcon("calendar")
-					.setTooltip("填入当前时间")
+					.setTooltip(t("modal.now"))
 					.onClick(() => {
 						if (!textComp) {
 							return;
@@ -256,17 +257,17 @@ export class FrontmatterAssistantModal extends Modal {
 	private renderImageFieldControl(containerEl: HTMLElement, control: FieldControl): void {
 		const wrapper = containerEl.createDiv({cls: "lcg-image-input"});
 		const fileButton = wrapper.createEl("button", {
-			text: "选择",
+			text: t("modal.select"),
 			attr: {
 				type: "button",
-				"aria-label": `选择本地图片并上传到 ${control.field.label}`,
+				"aria-label": t("modal.selectImage", {label: control.field.label}),
 			},
 		});
 		const fileInput = wrapper.createEl("input", {type: "file", cls: "lcg-image-input__file"});
 		fileInput.accept = "image/*";
 		const urlInput = wrapper.createEl("input", {
 			type: "text",
-			placeholder: "粘贴 URL，或在此粘贴图片自动上传",
+			placeholder: t("modal.pasteUrl"),
 		});
 		urlInput.value = control.value;
 
@@ -303,7 +304,7 @@ export class FrontmatterAssistantModal extends Modal {
 		control.chipsEl = wrapper.createDiv({cls: "lcg-array-input__chips"});
 		control.arrayInputEl = wrapper.createEl("input", {
 			type: "text",
-			placeholder: "输入后按回车或逗号添加",
+			placeholder: t("modal.enterToAdd"),
 		});
 
 		control.arrayInputEl.addEventListener("keydown", (evt) => {
@@ -341,9 +342,9 @@ export class FrontmatterAssistantModal extends Modal {
 	private renderBooleanControl(containerEl: HTMLElement, control: FieldControl): void {
 		const wrapper = containerEl.createDiv({cls: "lcg-boolean-control"});
 		const options = [
-			{label: "不更新", value: ""},
-			{label: "开启", value: "true"},
-			{label: "关闭", value: "false"},
+			{label: t("modal.notUpdate"), value: ""},
+			{label: t("modal.enable"), value: "true"},
+			{label: t("modal.disable"), value: "false"},
 		];
 		const buttons: HTMLButtonElement[] = [];
 		const sync = () => {
@@ -379,8 +380,8 @@ export class FrontmatterAssistantModal extends Modal {
 
 	private renderFooter(): void {
 		const footer = this.contentEl.createDiv({cls: "lcg-frontmatter-modal__footer"});
-		this.createActionButton(footer, "取消", () => this.close());
-		const applyButton = footer.createEl("button", {text: "写入 front matter", cls: "mod-cta"});
+		this.createActionButton(footer, t("modal.cancel"), () => this.close());
+		const applyButton = footer.createEl("button", {text: t("modal.write"), cls: "mod-cta"});
 		applyButton.addEventListener("click", () => this.applyUpdates());
 	}
 
@@ -395,7 +396,7 @@ export class FrontmatterAssistantModal extends Modal {
 			return "";
 		}
 		if (field.type === "string[]") {
-			const source = read.blockArray ? "块格式（- 语法）" : "内联格式（[] 语法）";
+			const source = read.blockArray ? t("modal.blockFormat") : t("modal.inlineFormat");
 			if (read.normalized) {
 				return `${read.normalized} (${source})`;
 			}
@@ -409,9 +410,9 @@ export class FrontmatterAssistantModal extends Modal {
 		}
 		if (field.type === "object") {
 			const lines = read.rawInline.split("\n").length;
-			const multi = lines > 1 ? ` (${lines} 行)` : "";
+			const multi = lines > 1 ? ` (${t("modal.lines", {count: lines})})` : "";
 			if (read.rawInline) {
-				return `${lines} 行${multi}`;
+				return `${t("modal.line", {count: lines})}${multi}`;
 			}
 			return "";
 		}
@@ -484,7 +485,7 @@ export class FrontmatterAssistantModal extends Modal {
 		}
 
 		if (count === 0) {
-			new Notice("没有可自动填入的默认值。");
+			new Notice(t("modal.noDefaults"));
 		}
 	}
 
@@ -536,7 +537,7 @@ export class FrontmatterAssistantModal extends Modal {
 				text: "×",
 				attr: {
 					type: "button",
-					"aria-label": `移除 ${value}`,
+					"aria-label": t("modal.remove", {value}),
 				},
 			});
 			removeButton.addEventListener("click", () => {
@@ -547,11 +548,11 @@ export class FrontmatterAssistantModal extends Modal {
 	}
 
 	private async uploadAndSetImage(file: File, control: FieldControl): Promise<void> {
-		this.setStatus(`正在上传 ${control.field.label}...`);
+		this.setStatus(t("modal.uploading", {label: control.field.label}));
 		try {
 			const result = await uploadImageInput(file, this.notePath, this.settings);
 			if (!result) {
-				this.setStatus("图片未上传。");
+				this.setStatus(t("modal.notUploaded"));
 				return;
 			}
 			if (this.closed && !this.committed) {
@@ -560,9 +561,9 @@ export class FrontmatterAssistantModal extends Modal {
 			}
 			this.pendingUploads.set(result.key, result.markdownUrl);
 			this.setControlValue(control, result.markdownUrl);
-			this.setStatus(`已上传并填入 ${control.field.label}。未写入前关闭窗口会自动删除本次上传。`);
+			this.setStatus(t("modal.uploadedAndFilled", {label: control.field.label}));
 		} catch (error) {
-			const message = error instanceof Error ? error.message : "图片上传失败。";
+			const message = error instanceof Error ? error.message : t("modal.uploadFailed");
 			this.setStatus(message);
 			new Notice(message, 8000);
 		}
@@ -591,13 +592,13 @@ export class FrontmatterAssistantModal extends Modal {
 		}
 
 		if (updates.length === 0) {
-			new Notice("没有填写需要写入的 front matter 字段。");
+			new Notice(t("error.noValue"));
 			return;
 		}
 
 		applyFrontmatterUpdates(this.editor, updates, this.settings.autoCreateFrontmatter);
 		this.committed = true;
-		new Notice(`已写入 ${updates.length} 个 front matter 字段。`);
+		new Notice(t("modal.writtenFields", {count: updates.length}));
 		this.close();
 	}
 
@@ -615,7 +616,7 @@ export class FrontmatterAssistantModal extends Modal {
 			}
 		}
 		if (deleted > 0) {
-			new Notice(`已清理 ${deleted} 个未写入的 CDN 图片。`);
+			new Notice(t("modal.cleanedUpImages", {count: deleted}));
 		}
 	}
 

@@ -9,10 +9,12 @@ import {FrontmatterFieldDefinition} from "./frontmatter/types";
 import {testUpload} from "./uploader";
 import {applyParsedR2Credentials, parseR2Credentials} from "./uploader/r2-credentials";
 import {UploadProvider, UploadTestResult} from "./uploader/types";
+import {t} from "./i18n";
 
 export interface LCGWritingAssistantSettings {
 	triggerPhrase: string;
 	autoCreateFrontmatter: boolean;
+	autoOpenPanel: boolean;
 	showAdvancedFields: boolean;
 	frontmatterTemplateFieldKeys: string[];
 	cdnEnabled: boolean;
@@ -38,6 +40,7 @@ interface UploadTestStatus {
 export const DEFAULT_SETTINGS: LCGWritingAssistantSettings = {
 	triggerPhrase: "/lcg",
 	autoCreateFrontmatter: true,
+	autoOpenPanel: false,
 	showAdvancedFields: false,
 	frontmatterTemplateFieldKeys: [...DEFAULT_TEMPLATE_FIELD_KEYS],
 	cdnEnabled: false,
@@ -62,9 +65,9 @@ export type SettingsHost = Plugin & {
 type SettingsTabId = "general" | "cdn" | "frontmatter";
 
 const SETTINGS_TABS: Array<{id: SettingsTabId; label: string}> = [
-	{id: "general", label: "基础"},
-	{id: "cdn", label: "图片上传"},
-	{id: "frontmatter", label: "字段说明"},
+	{id: "general", label: t("settings.general")},
+	{id: "cdn", label: t("settings.cdn")},
+	{id: "frontmatter", label: t("settings.frontmatter")},
 ];
 
 export function normalizeSettings(settings: LCGWritingAssistantSettings): LCGWritingAssistantSettings {
@@ -142,6 +145,16 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
+			.setName(t("settings.autoOpenPanel"))
+			.setDesc(t("settings.autoOpenPanelDesc"))
+			.addToggle((toggle) => toggle
+				.setValue(this.plugin.settings.autoOpenPanel)
+				.onChange(async (value) => {
+					this.plugin.settings.autoOpenPanel = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
 			.setName("Show advanced fields")
 			.setDesc("Show low-frequency fields like author, password, repost, _build in /lcg menu and field descriptions.")
 			.addToggle((toggle) => toggle
@@ -157,12 +170,12 @@ export class LCGSettingTab extends PluginSettingTab {
 
 	private renderCdnSettings(containerEl: HTMLElement): void {
 		new Setting(containerEl)
-			.setName("图片上传")
+			.setName(t("settings.imageUpload"))
 			.setHeading();
 
 		new Setting(containerEl)
-			.setName("粘贴图片时上传到 CDN")
-			.setDesc("开启后，剪贴板图片会先上传，再插入 Markdown 图片链接。关闭时完全交给 Obsidian 默认附件逻辑处理。")
+			.setName(t("settings.pasteImage"))
+			.setDesc(t("settings.pasteImageDesc"))
 			.addToggle((toggle) => toggle
 				.setValue(this.plugin.settings.cdnEnabled)
 				.onChange(async (value) => {
@@ -207,10 +220,10 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("上传路径前缀")
-			.setDesc("对象 key 的前缀，例如 images 或 posts/assets。最终会生成 年/月/文章名-时间.扩展名。")
+			.setName(t("settings.uploadPathPrefix"))
+			.setDesc(t("settings.uploadPathPrefixDesc"))
 			.addText((text) => text
-				.setPlaceholder("Images")
+				.setPlaceholder(t("settings.uploadPathPrefixPlaceholder"))
 				.setValue(this.plugin.settings.cdnPathPrefix)
 				.onChange(async (value) => {
 					this.plugin.settings.cdnPathPrefix = value.trim();
@@ -240,7 +253,7 @@ export class LCGSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 						new Notice(formatUploadTestNotice(result), 12000);
 					} catch (error) {
-						const message = error instanceof Error ? error.message : "CDN 测试失败。";
+						const message = error instanceof Error ? error.message : t("settings.cdnTestFailed");
 						this.plugin.settings.cdnTestStatus = {
 							ok: false,
 							message,
@@ -249,7 +262,7 @@ export class LCGSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 						new Notice(message, 10000);
 					} finally {
-						button.setDisabled(false).setButtonText("测试上传");
+						button.setDisabled(false).setButtonText(t("settings.cdnTestButton"));
 						this.display();
 					}
 				}));
@@ -285,9 +298,9 @@ export class LCGSettingTab extends PluginSettingTab {
 					applyParsedR2Credentials(this.plugin.settings, result.credentials);
 					this.clearCdnTestStatus();
 					await this.plugin.saveSettings();
-					const missing = result.missing.length > 0 ? `；仍需补充：${result.missing.join("、")}` : "";
-					const tokenNote = result.tokenDetected ? "；已从 cfat token 派生 S3 凭据，原始 token 未保存" : "";
-					new Notice(`已填充：${result.applied.join("、")}${missing}${tokenNote}`, 10000);
+					const missing = result.missing.length > 0 ? `；${t("settings.r2CredentialsMissing", { fields: result.missing.join("、") })}` : "";
+					const tokenNote = result.tokenDetected ? t("settings.r2DerivedFromToken") : "";
+					new Notice(`${t("settings.r2CredentialsApplied", { fields: result.applied.join("、") })}${missing}${tokenNote}`, 10000);
 					this.display();
 				}));
 
@@ -305,9 +318,9 @@ export class LCGSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("R2 bucket")
-			.setDesc("从 endpoint 路径自动解析；也可以手动指定已有 bucket。")
+			.setDesc(t("settings.r2EndpointDesc"))
 			.addText((text) => text
-				.setPlaceholder("存储桶名称")
+				.setPlaceholder(t("settings.r2BucketPlaceholder"))
 				.setValue(this.plugin.settings.r2Bucket)
 				.onChange(async (value) => {
 					this.plugin.settings.r2Bucket = value.trim();
@@ -329,11 +342,11 @@ export class LCGSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("R2 secret access key")
-			.setDesc("使用 cfat token 时会自动派生；原始 cfat token 不保存。")
+			.setDesc(t("settings.r2DerivedFromToken"))
 			.addText((text) => {
 				text.inputEl.type = "password";
 				text
-					.setPlaceholder("访问密钥")
+					.setPlaceholder(t("settings.r2AccessKeyPlaceholder"))
 					.setValue(this.plugin.settings.r2SecretAccessKey)
 					.onChange(async (value) => {
 						this.plugin.settings.r2SecretAccessKey = value.trim();
@@ -345,8 +358,8 @@ export class LCGSettingTab extends PluginSettingTab {
 
 	private renderWebDavSettings(containerEl: HTMLElement): void {
 		new Setting(containerEl)
-			.setName("网页文件服务地址")
-			.setDesc("远端目录地址，例如 https://dav.example.com/blog-assets。")
+			.setName(t("settings.webdavUrl"))
+			.setDesc(t("settings.webdavUrlDesc"))
 			.addText((text) => text
 				.setPlaceholder("https://dav.example.com/blog-assets")
 				.setValue(this.plugin.settings.webdavEndpoint)
@@ -357,10 +370,10 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("网页文件服务用户名")
-			.setDesc("基本认证用户名；如果服务端不需要认证可留空。")
+			.setName(t("settings.webdavUsername"))
+			.setDesc(t("settings.webdavUsernameDesc"))
 			.addText((text) => text
-				.setPlaceholder("用户名")
+				.setPlaceholder(t("settings.webdavUsernamePlaceholder"))
 				.setValue(this.plugin.settings.webdavUsername)
 				.onChange(async (value) => {
 					this.plugin.settings.webdavUsername = value.trim();
@@ -369,12 +382,12 @@ export class LCGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("网页文件服务密码")
-			.setDesc("基本认证密码或应用密码。")
+			.setName(t("settings.webdavPassword"))
+			.setDesc(t("settings.webdavPasswordDesc"))
 			.addText((text) => {
 				text.inputEl.type = "password";
 				text
-					.setPlaceholder("密码")
+					.setPlaceholder(t("settings.webdavPasswordPlaceholder"))
 					.setValue(this.plugin.settings.webdavPassword)
 					.onChange(async (value) => {
 						this.plugin.settings.webdavPassword = value;
@@ -395,7 +408,7 @@ export class LCGSettingTab extends PluginSettingTab {
 		const toolbar = containerEl.createDiv({cls: "lcg-template-toolbar"});
 		const selectedCount = toolbar.createSpan({
 			cls: "lcg-template-toolbar__count",
-			text: `模板已选 ${this.plugin.settings.frontmatterTemplateFieldKeys.length} 个字段`,
+			text: `t("settings.templateSelected", {count: this.plugin.settings.frontmatterTemplateFieldKeys.length})`,
 		});
 		this.createButton(toolbar, "Reset to recommended", async () => {
 			this.plugin.settings.frontmatterTemplateFieldKeys = [...DEFAULT_TEMPLATE_FIELD_KEYS];
@@ -480,16 +493,16 @@ export class LCGSettingTab extends PluginSettingTab {
 
 		const badges = header.createDiv({cls: "lcg-field-card__badges"});
 		this.createBadge(badges, field.type);
-		this.createBadge(badges, field.required ? "必填" : "可选");
+		this.createBadge(badges, field.required ? t("settings.fieldRequired") : t("settings.fieldOptional"));
 		this.createBadge(badges, FRONTMATTER_SOURCE_LABELS[field.source]);
 		if (field.deprecated) {
-			this.createBadge(badges, "兼容旧字段", "is-warning");
+			this.createBadge(badges, t("settings.fieldDeprecated"), "is-warning");
 		}
 		const templateStatus = this.createTemplateStatus(badges, isSelected);
 
 		card.createDiv({cls: "lcg-field-card__description", text: field.description});
 		if (field.example) {
-			card.createDiv({cls: "lcg-field-card__example", text: `示例：${field.example}`});
+			card.createDiv({cls: "lcg-field-card__example", text: `t("settings.fieldExample", {example: field.example})`});
 		}
 
 		const toggleTemplateField = async () => {
@@ -528,7 +541,7 @@ export class LCGSettingTab extends PluginSettingTab {
 	private updateTemplateStatus(templateStatus: HTMLElement, isSelected: boolean): void {
 		templateStatus.toggleClass("is-selected", isSelected);
 		templateStatus.setAttr("aria-hidden", "true");
-		templateStatus.find(".lcg-field-card__template-text")?.setText(isSelected ? "已加入模板" : "未加入模板");
+		templateStatus.find(".lcg-field-card__template-text")?.setText(isSelected ? t("settings.fieldInTemplate") : t("settings.fieldNotInTemplate"));
 	}
 
 	private async setTemplateFieldEnabled(key: string, enabled: boolean, selectedCount: HTMLElement): Promise<void> {
@@ -545,7 +558,7 @@ export class LCGSettingTab extends PluginSettingTab {
 			}
 		}
 		this.plugin.settings.frontmatterTemplateFieldKeys = normalizeTemplateFieldKeys(Array.from(keys));
-		selectedCount.setText(`模板已选 ${this.plugin.settings.frontmatterTemplateFieldKeys.length} 个字段`);
+		selectedCount.setText(t("settings.templateSelected", {count: this.plugin.settings.frontmatterTemplateFieldKeys.length}));
 		await this.plugin.saveSettings();
 	}
 
@@ -557,7 +570,7 @@ export class LCGSettingTab extends PluginSettingTab {
 		const total = fields.length;
 		const selectedKeys = new Set(this.plugin.settings.frontmatterTemplateFieldKeys);
 		const selected = fields.filter((field) => selectedKeys.has(field.key)).length;
-		return `总共 ${total} · 已选中 ${selected} · 未勾选 ${total - selected}`;
+		return t("settings.totalSelected", {total, selected, unchecked: total - selected});
 	}
 
 	private updateGroupSelectionCount(countEl: HTMLElement, fields: FrontmatterFieldDefinition[]): void {
@@ -568,7 +581,7 @@ export class LCGSettingTab extends PluginSettingTab {
 		card.setAttr("role", "checkbox");
 		card.setAttr("tabindex", "0");
 		card.setAttr("aria-checked", String(isSelected));
-		card.setAttr("aria-label", `${field.label}，${isSelected ? "已加入模板" : "未加入模板"}，按回车或空格切换`);
+		card.setAttr("aria-label", `${field.label}，${isSelected ? t("settings.fieldInTemplate") : t("settings.fieldNotInTemplate")}，${t("settings.fieldCardToggleHint")}`);
 	}
 
 	private createInlineButton(containerEl: HTMLElement, text: string, onClick: (evt: MouseEvent) => void | Promise<void>): HTMLButtonElement {
@@ -604,7 +617,7 @@ export class LCGSettingTab extends PluginSettingTab {
 		if (!status) {
 			containerEl.createDiv({
 				cls: "lcg-cdn-test-status",
-				text: "尚未测试当前 CDN 配置。",
+				text: t("settings.cdnTestPending"),
 			});
 			return;
 		}
@@ -612,7 +625,7 @@ export class LCGSettingTab extends PluginSettingTab {
 		const statusEl = containerEl.createDiv({
 			cls: `lcg-cdn-test-status ${status.ok ? "is-success" : "is-error"}`,
 		});
-		statusEl.createDiv({text: status.ok ? "CDN 测试通过" : "CDN 测试失败"});
+		statusEl.createDiv({text: status.ok ? t("settings.cdnTestSuccess") : t("settings.cdnTestFailed")});
 		statusEl.createDiv({
 			cls: "lcg-cdn-test-status__detail",
 			text: `${formatLocalDateTime(status.checkedAt)} · ${status.message}`,
@@ -637,7 +650,7 @@ export class LCGSettingTab extends PluginSettingTab {
 		// Intentional: anchor element displayed but no click handler needed
 		buttons.createEl("a", {
 			cls: "lcg-support-section__btn",
-			text: "爱发电",
+			text: t("settings.afdian"),
 			attr: {href: "https://afdian.net/@Ink-kai", target: "_blank", rel: "noopener"},
 		});
 
@@ -672,10 +685,10 @@ function formatUploadTestNotice(result: UploadTestResult): string {
 function buildUploadTestStatus(result: UploadTestResult): UploadTestStatus {
 	const publicAccess = result.publicAccess.checked
 		? result.publicAccess.ok
-			? "公开 URL 可访问"
-			: `公开 URL 不可访问（HTTP ${result.publicAccess.status ?? "unknown"}）`
-		: "未检查公开 URL";
-	const cleanup = result.deleted ? "测试文件已删除" : "测试文件未删除";
+			? t("settings.cdnPublicAccessOk")
+			: t("settings.cdnPublicAccessFail", {status: result.publicAccess.status ?? "unknown"})
+		: t("settings.cdnPublicAccessNotChecked");
+	const cleanup = result.deleted ? t("settings.cdnTestFileDeleted") : t("settings.cdnTestFileNotDeleted");
 	const ok = result.publicAccess.ok && result.deleted;
 	return {
 		ok,
