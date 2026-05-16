@@ -643,3 +643,72 @@ If your plugin does not need CSS, delete this file.
 		width: 100%;
 	}
 }
+
+/* LCG Panel */
+.lcg-panel {
+	padding: 12px;
+}
+
+.lcg-panel__placeholder {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	color: var(--text-muted);
+	text-align: center;
+}
+
+.lcg-panel__placeholder p {
+	margin: 4px 0;
+}
+
+.lcg-panel__hint {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-faint);
+}
+
+.lcg-panel__header {
+	margin-bottom: 12px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.lcg-panel__header h2 {
+	margin: 0;
+	font-size: var(--font-ui-size);
+	font-weight: var(--font-medium);
+}
+
+.lcg-panel__fields {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.lcg-panel__field {
+	display: flex;
+	flex-direction: column;
+	padding: 8px;
+	background: var(--background-secondary);
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.15s ease;
+}
+
+.lcg-panel__field:hover {
+	background: var(--background-tertiary);
+}
+
+.lcg-panel__field-key {
+	font-weight: var(--font-medium);
+	font-size: var(--font-ui-smaller);
+	color: var(--text-normal);
+	margin-bottom: 2px;
+}
+
+.lcg-panel__field-value {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-muted);
+	word-break: break-all;
+}

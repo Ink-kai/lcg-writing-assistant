@@ -4,6 +4,7 @@ import {registerEditorContextMenu} from "./editor/context-menu";
 import {LCGSlashSuggest} from "./editor/lcg-slash-suggest";
 import {registerPasteImageHandler} from "./editor/paste-image";
 import {DEFAULT_SETTINGS, LCGSettingTab, LCGWritingAssistantSettings, normalizeSettings} from "./settings";
+import {LCGPanelView, LCG_PANEL_VIEW_TYPE, openPanel} from "./panel/view";
 
 export default class LCGWritingAssistantPlugin extends Plugin {
 	settings: LCGWritingAssistantSettings;
@@ -15,6 +16,18 @@ export default class LCGWritingAssistantPlugin extends Plugin {
 		registerLCGCommands(this, this.settings);
 		registerEditorContextMenu(this, () => this.settings);
 		registerPasteImageHandler(this, () => this.settings);
+
+		this.registerView(LCG_PANEL_VIEW_TYPE, (leaf) => new LCGPanelView(leaf, this.app, this.settings));
+
+		this.addRibbonIcon("panel-stats", "LCG 面板", () => {
+			openPanel(this.app);
+		});
+
+		this.addCommand({
+			id: "open-lcg-panel",
+			name: "打开 LCG 面板",
+			callback: () => openPanel(this.app),
+		});
 
 		this.addSettingTab(new LCGSettingTab(this.app, this));
 
